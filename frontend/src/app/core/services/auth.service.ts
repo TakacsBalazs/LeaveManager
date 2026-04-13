@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,25 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('jwt_token');
+    const token = localStorage.getItem('jwt_token');
+    if(!token){
+      return false;
+    }
+
+    try {
+      const decodedToken: any = jwtDecode(token);
+      
+      const isExpired = decodedToken.exp * 1000 < Date.now();
+
+      if (isExpired) {
+        localStorage.removeItem('jwt_token')
+        return false;
+      }
+
+      return true;
+    } catch {
+      localStorage.removeItem('jwt_token');
+      return false;
+    }
   }
 }
