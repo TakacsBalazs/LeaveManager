@@ -1,0 +1,26 @@
+<div class="min-h-screen bg-gray-100">
+  
+    <nav class="bg-blue-600 shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          
+          <div class="flex items-center">
+            <span class="text-white font-bold text-xl">LeaveManager</span>
+            <div class="ml-10 flex items-baseline space-x-4">
+              <a routerLink="dashboard" class="text-white hover:bg-blue-500 px-3 py-2 rounded-md font-medium transition">Dashboard</a>
+            </div>
+          </div>
+  
+          <div>
+            <button class="text-blue-100 hover:text-white font-medium">Logout</button>
+          </div>
+  
+        </div>
+      </div>
+    </nav>
+  
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <router-outlet />
+    </main>
+  
+  </div>
