@@ -1,4 +1,5 @@
 ﻿using LeaveManagerAPI.Common;
+using LeaveManagerAPI.Extensions;
 using LeaveManagerAPI.Models;
 using LeaveManagerAPI.Models.Requests;
 using LeaveManagerAPI.Models.Responses;
@@ -11,15 +12,24 @@ namespace LeaveManagerAPI.Services
     {
         private readonly ITokenService tokenService;
         private readonly UserManager<User> userManager;
+        private readonly IServiceProvider serviceProvider;
 
-        public AuthService(ITokenService tokenService, UserManager<User> userManager)
+        public AuthService(ITokenService tokenService, UserManager<User> userManager, IServiceProvider serviceProvider)
         {
             this.tokenService = tokenService;
             this.userManager = userManager;
+            this.serviceProvider = serviceProvider;
+
         }
 
         public async Task<Result<LoginResponse>> LoginAsync(UserLoginRequest request)
         {
+            var validate = await serviceProvider.ValidateRequestAsync<UserLoginRequest>(request);
+            if (!validate.IsSuccess)
+            {
+                return Result<LoginResponse>.Failure(validate.Errors);
+            }
+
             User? user = await userManager.FindByEmailAsync(request.Email);
             if(user == null)
             {
