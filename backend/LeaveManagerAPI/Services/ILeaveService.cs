@@ -1,4 +1,5 @@
 ﻿using LeaveManagerAPI.Common;
+using LeaveManagerAPI.Models.Requests;
 using LeaveManagerAPI.Models.Responses;
 
 namespace LeaveManagerAPI.Services
@@ -6,5 +7,7 @@ namespace LeaveManagerAPI.Services
     public interface ILeaveService
     {
         Task<Result<DashboardResponse>> GetDashboardAsync(string userId);
+
+        Task<Result> CreateLeaveRequestAsnyc(CreateLeaveRequest request, string userId);
     }
 }
