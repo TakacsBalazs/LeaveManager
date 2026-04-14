@@ -1,3 +1,4 @@
+using FluentValidation;
 using LeaveManagerAPI.Data;
 using LeaveManagerAPI.Models;
 using LeaveManagerAPI.Services;
@@ -63,6 +64,8 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
     });
 });
+
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 var app = builder.Build();
 
