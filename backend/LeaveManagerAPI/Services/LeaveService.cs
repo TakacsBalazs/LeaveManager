@@ -35,5 +35,48 @@ namespace LeaveManagerAPI.Services
 
             return Result<DashboardResponse>.Success(response);
         }
+
+        public async Task<Result> CreateLeaveRequestAsnyc(CreateLeaveRequest request, string userId)
+        {
+            var balance = await context.LeaveBalances.FirstOrDefaultAsync(x => x.Type == request.Type && x.Year == DateTime.UtcNow.Year && x.UserId == userId);
+            if(balance == null)
+            {
+                return Result.Failure("Invalid leave request!");
+            }
+
+            DateOnly current = request.StartDate;
+
+            int workingDays = 0;
+
+            while (current <= request.EndDate)
+            {
+                if (current.DayOfWeek != DayOfWeek.Saturday && current.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    workingDays++;
+                }
+                current = current.AddDays(1);
+            }
+            if(workingDays > balance.RemainingDays) {
+                return Result.Failure("Don't have enough leave days!");
+            }
+
+            var leaveRequest = new LeaveRequest
+            {
+                UserId = userId,
+                Type = request.Type,
+                StartDate = request.StartDate,
+                EndDate = request.EndDate,
+                Reason = request.Reason?.Trim(),
+                RequestedDays = workingDays,
+                Status = LeaveRequestStatus.Pending,
+                ReviewerId = null,
+                ReviewedAt = null
+            };
+            context.LeaveRequests.Add(leaveRequest);
+
+            await context.SaveChangesAsync();
+
+            return Result.Success();
+        }
     }
 }
