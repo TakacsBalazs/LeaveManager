@@ -1,5 +1,6 @@
 ﻿using LeaveManagerAPI.Common;
 using LeaveManagerAPI.Data;
+using LeaveManagerAPI.Extensions;
 using LeaveManagerAPI.Models;
 using LeaveManagerAPI.Models.Dtos;
 using LeaveManagerAPI.Models.Requests;
@@ -11,10 +12,13 @@ namespace LeaveManagerAPI.Services
     public class LeaveService : ILeaveService
     {
         private readonly AppDbContext context;
+        private readonly IServiceProvider serviceProvider;
 
-        public LeaveService(AppDbContext context)
+        public LeaveService(AppDbContext context, IServiceProvider serviceProvider)
         {
             this.context = context;
+            this.serviceProvider = serviceProvider;
+
         }
         public async Task<Result<DashboardResponse>> GetDashboardAsync(string userId)
         {
@@ -38,10 +42,24 @@ namespace LeaveManagerAPI.Services
 
         public async Task<Result> CreateLeaveRequestAsnyc(CreateLeaveRequest request, string userId)
         {
+            var validate = await serviceProvider.ValidateRequestAsync<CreateLeaveRequest>(request);
+            if(!validate.IsSuccess)
+            {
+                return Result.Failure(validate.Errors);
+            }
+
             var balance = await context.LeaveBalances.FirstOrDefaultAsync(x => x.Type == request.Type && x.Year == DateTime.UtcNow.Year && x.UserId == userId);
             if(balance == null)
             {
                 return Result.Failure("Invalid leave request!");
+            }
+
+            var hasOverlap = await context.LeaveRequests.AnyAsync(x => x.UserId == userId && x.Status != LeaveRequestStatus.Rejected
+                && x.Status != LeaveRequestStatus.Cancelled && request.StartDate <= x.EndDate && request.EndDate >= x.StartDate);
+
+            if (hasOverlap)
+            {
+                return Result.Failure("You already have an leave request for this period!");
             }
 
             DateOnly current = request.StartDate;
@@ -56,6 +74,11 @@ namespace LeaveManagerAPI.Services
                 }
                 current = current.AddDays(1);
             }
+
+            if(workingDays == 0) {
+                return Result.Failure("This does not containt any working days.");
+            }
+
             if(workingDays > balance.RemainingDays) {
                 return Result.Failure("Don't have enough leave days!");
             }
