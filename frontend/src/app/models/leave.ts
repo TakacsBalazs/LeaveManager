@@ -5,3 +5,9 @@ export interface LeaveBalanceDto {
     remainingDays: number;
 }
 
+export interface CreateLeaveRequestDto{
+    type: number,
+    startDate: string,
+    endDate: string,
+    reason: string | null
+}
