@@ -229,5 +229,25 @@ namespace LeaveManagerAPI.Services
 
             return Result.Success();
         }
+
+        public async Task<Result<IEnumerable<LeaveRequestResponse>>> GetAllPendingRequestsAsync()
+        {
+            var response = await context.LeaveRequests.Where(x => x.Status == LeaveRequestStatus.Pending).Select(x => new LeaveRequestResponse
+            {
+                Id = x.Id,
+                Type = x.Type,
+                StartDate = x.StartDate,
+                EndDate = x.EndDate,
+                RequestedDays = x.RequestedDays,
+                Reason = x.Reason,
+                Status = x.Status,
+                ReviewerName = x.Reviewer != null ? x.Reviewer.FullName : null,
+                ReviewedAt = x.ReviewedAt,
+                CreatedAt = x.CreatedAt,
+                RequesterName = x.User.FullName
+            }).ToListAsync();
+
+            return Result<IEnumerable<LeaveRequestResponse>>.Success(response);
+        }
     }
 }
