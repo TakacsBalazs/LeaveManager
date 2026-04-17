@@ -45,4 +45,17 @@ export class AuthService {
       return false;
     }
   }
+
+  getRole(): string | string[] | null {
+    const token = localStorage.getItem('jwt_token');
+    if(!token){
+      return null;
+    } 
+    try {
+      const decodedToken: any = jwtDecode(token);
+      return decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || decodedToken.role;
+    } catch {
+      return null;
+    }
+  }
 }
