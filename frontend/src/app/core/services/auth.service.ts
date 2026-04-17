@@ -58,4 +58,15 @@ export class AuthService {
       return null;
     }
   }
+
+  isAdmin(): boolean {
+  const role = this.getRole();
+  if (!role) return false;
+
+  if (Array.isArray(role)) {
+    return role.includes('Admin');
+  }
+
+  return role === 'Admin';
+  }
 }
