@@ -24,4 +24,15 @@ export class MyRequestsComponent implements OnInit{
     });
   }
 
+  cancelTheRequest(id: number){
+    //check the confirm
+    this.leaveService.cancelTheRequets(id).subscribe({
+      next: () => {
+        const requestToUpdate = this.data.find(x => x.id === id);
+        if(requestToUpdate){
+          requestToUpdate.status = 'Cancelled';
+        }
+      }
+    })
+  }
 }
