@@ -172,5 +172,62 @@ namespace LeaveManagerAPI.Services
 
             return Result<LeaveRequestResponse>.Success(request);
         }
+
+        public async Task<Result> ApproveRequestAsync(int id, string userId)
+        {
+            var request = await context.LeaveRequests.FindAsync(id);
+            if(request == null)
+            {
+                return Result.Failure("Invalid Id!");
+            }
+
+            if(request.Status != LeaveRequestStatus.Pending)
+            {
+                return Result.Failure("Status is not pending!");
+            }
+
+            var balance = await context.LeaveBalances.FirstOrDefaultAsync(x => x.Type == request.Type && x.Year == request.StartDate.Year && x.UserId == request.UserId);
+            if(balance == null)
+            {
+                return Result.Failure("There is no balance of the type!");
+            }
+
+            if(balance.RemainingDays < request.RequestedDays)
+            {
+                return Result.Failure("User has not enough days left!");
+            }
+
+            balance.UsedDays += request.RequestedDays;
+
+            request.Status = LeaveRequestStatus.Approved;
+            request.ReviewerId = userId;
+            request.ReviewedAt = DateTime.UtcNow;
+
+            await context.SaveChangesAsync();
+
+            return Result.Success();
+        }
+
+        public async Task<Result> RejectRequestAsync(int id, string userId)
+        {
+            var request = await context.LeaveRequests.FindAsync(id);
+            if(request == null)
+            {
+                return Result.Failure("Invalid Id!");
+            }
+
+            if(request.Status != LeaveRequestStatus.Pending)
+            {
+                return Result.Failure("Status is not pending!");
+            }
+
+            request.Status = LeaveRequestStatus.Rejected;
+            request.ReviewerId = userId;
+            request.ReviewedAt = DateTime.UtcNow;
+
+            await context.SaveChangesAsync();
+
+            return Result.Success();
+        }
     }
 }
