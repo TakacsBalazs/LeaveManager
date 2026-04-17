@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CreateLeaveRequestDto } from '../../models/leave';
+import { CreateLeaveRequestDto, LeaveRequestDto } from '../../models/leave';
 import { Observable } from 'rxjs';
 import { MessageResponse } from '../../models/api-responses';
 
@@ -14,5 +14,9 @@ export class LeaveService {
 
   createLeaveRequest(data: CreateLeaveRequestDto ): Observable<MessageResponse>{
     return this.http.post<MessageResponse>(this.apiUrl, data);
+  }
+
+  getMyLeaveRequests(): Observable<LeaveRequestDto[]> {
+    return this.http.get<LeaveRequestDto[]>(`${this.apiUrl}/my`);
   }
 }
