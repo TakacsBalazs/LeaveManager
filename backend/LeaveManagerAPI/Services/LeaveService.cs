@@ -147,5 +147,30 @@ namespace LeaveManagerAPI.Services
 
             return Result.Success();
         }
+
+        public async Task<Result<LeaveRequestResponse>> GetRequestByIdAsync(int id, string userId)
+        {
+            var request = await context.LeaveRequests.Where(x => x.Id == id && x.UserId == userId).Select(x => new LeaveRequestResponse
+            {
+                Id = x.Id,
+                Type = x.Type,
+                StartDate = x.StartDate,
+                EndDate = x.EndDate,
+                RequestedDays = x.RequestedDays,
+                Reason = x.Reason,
+                Status = x.Status,
+                ReviewerName = x.Reviewer != null ? x.Reviewer.FullName : null,
+                ReviewedAt = x.ReviewedAt,
+                CreatedAt = x.CreatedAt,
+                RequesterName = x.User.FullName
+            }).FirstOrDefaultAsync();
+
+            if(request == null)
+            {
+                return Result<LeaveRequestResponse>.Failure("Invalid Id or you don't have access to it!");
+            }
+
+            return Result<LeaveRequestResponse>.Success(request);
+        }
     }
 }
