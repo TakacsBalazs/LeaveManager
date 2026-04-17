@@ -1,4 +1,5 @@
 ﻿using LeaveManagerAPI.Common;
+using LeaveManagerAPI.Constants;
 using LeaveManagerAPI.Data;
 using LeaveManagerAPI.Extensions;
 using LeaveManagerAPI.Models;
@@ -148,9 +149,16 @@ namespace LeaveManagerAPI.Services
             return Result.Success();
         }
 
-        public async Task<Result<LeaveRequestResponse>> GetRequestByIdAsync(int id, string userId)
+        public async Task<Result<LeaveRequestResponse>> GetRequestByIdAsync(int id, string userId, bool hasPrivileges)
         {
-            var request = await context.LeaveRequests.Where(x => x.Id == id && x.UserId == userId).Select(x => new LeaveRequestResponse
+            var query = context.LeaveRequests.Where(x => x.Id == id);
+
+            if (!hasPrivileges)
+            {
+                query = query.Where(x => x.UserId == userId);
+            }
+
+            var request = await query.Select(x => new LeaveRequestResponse
             {
                 Id = x.Id,
                 Type = x.Type,
