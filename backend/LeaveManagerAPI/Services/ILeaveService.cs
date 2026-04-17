@@ -9,5 +9,7 @@ namespace LeaveManagerAPI.Services
         Task<Result<DashboardResponse>> GetDashboardAsync(string userId);
 
         Task<Result> CreateLeaveRequestAsnyc(CreateLeaveRequest request, string userId);
+
+        Task<Result<IEnumerable<LeaveRequestResponse>>> GetMyRequestsAsync(string userId);
     }
 }
