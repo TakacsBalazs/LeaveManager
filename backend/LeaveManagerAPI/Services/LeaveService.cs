@@ -123,5 +123,29 @@ namespace LeaveManagerAPI.Services
 
             return Result<IEnumerable<LeaveRequestResponse>>.Success(requests);
         }
+
+        public async Task<Result> CancelRequestAsync(int id, string userId)
+        {
+            var request = await context.LeaveRequests.FindAsync(id);
+            if(request == null)
+            {
+                return Result.Failure("Invalid Id!");
+            }
+
+            if(request.UserId != userId)
+            {
+                return Result.Failure("Not your request!");
+            }
+
+            if(request.Status != LeaveRequestStatus.Pending)
+            {
+                return Result.Failure("Can't cancel this request!");
+            }
+
+            request.Status = LeaveRequestStatus.Cancelled;
+            await context.SaveChangesAsync();
+
+            return Result.Success();
+        }
     }
 }
