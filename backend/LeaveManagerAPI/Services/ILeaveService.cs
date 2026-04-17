@@ -13,5 +13,7 @@ namespace LeaveManagerAPI.Services
         Task<Result<IEnumerable<LeaveRequestResponse>>> GetMyRequestsAsync(string userId);
 
         Task<Result> CancelRequestAsync(int id, string userId);
+
+        Task<Result<LeaveRequestResponse>> GetRequestByIdAsync(int id, string userId);
     }
 }
