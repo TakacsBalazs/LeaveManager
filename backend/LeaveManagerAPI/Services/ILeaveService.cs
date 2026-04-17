@@ -19,5 +19,7 @@ namespace LeaveManagerAPI.Services
         Task<Result> ApproveRequestAsync(int id, string userId);
 
         Task<Result> RejectRequestAsync(int id, string userId);
+
+        Task<Result<IEnumerable<LeaveRequestResponse>>> GetAllPendingRequestsAsync();
     }
 }
