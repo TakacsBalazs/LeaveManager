@@ -19,4 +19,8 @@ export class LeaveService {
   getMyLeaveRequests(): Observable<LeaveRequestDto[]> {
     return this.http.get<LeaveRequestDto[]>(`${this.apiUrl}/my`);
   }
+
+  cancelTheRequests(id: number): Observable<MessageResponse>{
+    return this.http.post<MessageResponse>(`${this.apiUrl}/${id}/cancel`, {});
+  }
 }
