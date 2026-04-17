@@ -99,5 +99,18 @@ namespace LeaveManagerAPI.Controllers
             }
             return Ok(new { message = "Successful reject the leave request!" });
         }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpGet("allpendingrequests")]
+        public async Task<IActionResult> GetAllPendingRequests()
+        {
+            var result = await leaveService.GetAllPendingRequestsAsync();
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Errors);
+
+            }
+            return Ok(result.Data);
+        }
     }
 }
