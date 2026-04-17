@@ -1,0 +1,58 @@
+<div class="bg-white shadow rounded-lg p-6 border border-gray-200">
+  
+    <h1 class="text-2xl font-bold text-gray-800 mb-2">Pending Requests</h1>
+    <p class="text-gray-600 mb-6">Here you can see all pending leave requests submitted.</p>
+  
+    @if(isLoading) {
+      <div class="flex justify-center items-center py-10">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    } @else {
+      
+      @if(data.length === 0) {
+        <div class="text-center py-10 bg-gray-50 rounded-lg border border-gray-100">
+          <p class="text-gray-500 font-medium">There are no pending leave requests.</p>
+        </div>
+      } @else {
+        <div class="overflow-y-auto h-[600px]">
+          <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg"> 
+            <thead class="bg-gray-50 sticky top-[-1px] z-10">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Days</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Requester Name</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              @for (request of data; track request.id) {
+                <tr class="hover:bg-gray-50 transition-colors cursor-pointer" [routerLink]="['/app/requests', request.id]">
+                  
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="text-sm font-medium text-gray-900">{{ request.type }}</span>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <p class="text-sm text-gray-900">{{ request.startDate  }} - {{ request.endDate  }}</p>
+                    <p class="text-xs text-gray-500">Requested: {{ request.createdAt.replace('T', ' ').slice(0, 16) }}</p>
+                  </td>
+  
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">{{ request.requestedDays }} day(s)</span>
+                  </td>
+  
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-medium">{{ request.requesterName }}</span>
+                  </td>
+  
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1.5 mr-4 transition rounded-md" (click)="onReject(request.id); $event.stopPropagation()">Reject</button>
+                        <button class="text-green-600 hover:text-green-900 bg-green-50 hover:bg-green-100 px-3 py-1.5 transition rounded-md" (click)="onApprove(request.id); $event.stopPropagation()">Approve</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    }
+  </div>
