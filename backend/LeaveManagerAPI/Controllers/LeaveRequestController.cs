@@ -1,4 +1,6 @@
-﻿using LeaveManagerAPI.Models.Requests;
+﻿using Azure.Core;
+using LeaveManagerAPI.Constants;
+using LeaveManagerAPI.Models.Requests;
 using LeaveManagerAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -29,6 +31,19 @@ namespace LeaveManagerAPI.Controllers
                 return BadRequest(result.Errors);
             }
             return Ok(new {message = "Successful create a leave request!" });
+        }
+
+        [Authorize]
+        [HttpGet("my")]
+        public async Task<IActionResult> GetMyRequests()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var result = await leaveService.GetMyRequestsAsync(userId);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Errors);
+            }
+            return Ok(result.Data);
         }
     }
 }
