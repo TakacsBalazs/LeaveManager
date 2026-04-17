@@ -4,6 +4,7 @@ import { MainLayoutComponent } from './layouts/main-layout/main-layout.component
 import { authGuard } from './core/guards/auth.guard';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { RequestLeaveComponent } from './pages/request-leave/request-leave.component';
+import { MyRequestsComponent } from './pages/my-requests/my-requests.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -11,6 +12,7 @@ export const routes: Routes = [
     { path: 'app', component: MainLayoutComponent, canActivate: [authGuard], children: [
         { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
         { path: 'dashboard', component: DashboardComponent },
-        { path: 'request-leave', component: RequestLeaveComponent}
+        { path: 'request-leave', component: RequestLeaveComponent },
+        { path: 'my-requests', component: MyRequestsComponent }
     ]}
 ];
