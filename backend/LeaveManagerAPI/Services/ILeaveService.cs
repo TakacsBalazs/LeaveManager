@@ -11,5 +11,7 @@ namespace LeaveManagerAPI.Services
         Task<Result> CreateLeaveRequestAsnyc(CreateLeaveRequest request, string userId);
 
         Task<Result<IEnumerable<LeaveRequestResponse>>> GetMyRequestsAsync(string userId);
+
+        Task<Result> CancelRequestAsync(int id, string userId);
     }
 }
