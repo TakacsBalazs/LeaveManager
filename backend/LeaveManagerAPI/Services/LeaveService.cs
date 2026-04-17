@@ -101,5 +101,27 @@ namespace LeaveManagerAPI.Services
 
             return Result.Success();
         }
+
+        public async Task<Result<IEnumerable<LeaveRequestResponse>>> GetMyRequestsAsync(string userId)
+        {
+            var requests = await context.LeaveRequests.Where(x => x.UserId == userId && x.StartDate.Year == DateTime.UtcNow.Year)
+                .OrderByDescending(x => x.CreatedAt).Select(x => new LeaveRequestResponse
+                {
+                    Id = x.Id,
+                    Type = x.Type,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                    RequestedDays = x.RequestedDays,
+                    Reason = x.Reason,
+                    Status = x.Status,
+                    ReviewerName = x.Reviewer != null ? x.Reviewer.FullName : null,
+                    ReviewedAt = x.ReviewedAt,
+                    CreatedAt = x.CreatedAt,
+                    RequesterName = x.User.FullName
+
+                }).ToListAsync();
+
+            return Result<IEnumerable<LeaveRequestResponse>>.Success(requests);
+        }
     }
 }
