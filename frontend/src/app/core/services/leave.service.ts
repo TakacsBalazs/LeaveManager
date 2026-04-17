@@ -35,4 +35,8 @@ export class LeaveService {
   rejectRequest(id: number): Observable<MessageResponse>{
     return this.http.post<MessageResponse>(`${this.apiUrl}/${id}/reject`, {});
   }
+
+  getAllPendingRequests(): Observable<LeaveRequestDto[]>{
+    return this.http.get<LeaveRequestDto[]>(`${this.apiUrl}/allpendingrequests`);
+  }
 }
