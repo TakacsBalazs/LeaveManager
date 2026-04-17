@@ -5,6 +5,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { RequestLeaveComponent } from './pages/request-leave/request-leave.component';
 import { MyRequestsComponent } from './pages/my-requests/my-requests.component';
+import { RequestDetailsComponent } from './pages/request-details/request-details.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -13,6 +14,7 @@ export const routes: Routes = [
         { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
         { path: 'dashboard', component: DashboardComponent },
         { path: 'request-leave', component: RequestLeaveComponent },
-        { path: 'my-requests', component: MyRequestsComponent }
+        { path: 'my-requests', component: MyRequestsComponent },
+        { path: 'requests/:id', component: RequestDetailsComponent}
     ]}
 ];
