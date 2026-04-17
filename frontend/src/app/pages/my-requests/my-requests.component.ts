@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { LeaveService } from '../../core/services/leave.service';
 import { LeaveRequestDto } from '../../models/leave';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-my-requests',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './my-requests.component.html',
   styleUrl: './my-requests.component.scss'
 })
@@ -26,7 +27,7 @@ export class MyRequestsComponent implements OnInit{
 
   cancelTheRequest(id: number){
     //check the confirm
-    this.leaveService.cancelTheRequets(id).subscribe({
+    this.leaveService.cancelTheRequests(id).subscribe({
       next: () => {
         const requestToUpdate = this.data.find(x => x.id === id);
         if(requestToUpdate){
