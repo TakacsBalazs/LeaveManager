@@ -27,4 +27,12 @@ export class LeaveService {
   getRequestById(id: number): Observable<LeaveRequestDto>{
     return this.http.get<LeaveRequestDto>(`${this.apiUrl}/${id}`);
   }
+
+  approveRequest(id: number): Observable<MessageResponse>{
+    return this.http.post<MessageResponse>(`${this.apiUrl}/${id}/approve`, {});
+  }
+
+  rejectRequest(id: number): Observable<MessageResponse>{
+    return this.http.post<MessageResponse>(`${this.apiUrl}/${id}/reject`, {});
+  }
 }
