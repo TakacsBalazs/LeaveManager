@@ -58,5 +58,18 @@ namespace LeaveManagerAPI.Controllers
             }
             return Ok(new { message = "Successful cancel the leave request!" });
         }
+
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetRequestById(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var result = await leaveService.GetRequestByIdAsync(id, userId);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Errors);
+            }
+            return Ok(result.Data);
+        }
     }
 }
