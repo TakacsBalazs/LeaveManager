@@ -64,7 +64,8 @@ namespace LeaveManagerAPI.Controllers
         public async Task<IActionResult> GetRequestById(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            var result = await leaveService.GetRequestByIdAsync(id, userId);
+            bool hasPrivileges = User.IsInRole(UserRoles.Admin);
+            var result = await leaveService.GetRequestByIdAsync(id, userId, hasPrivileges);
             if (!result.IsSuccess)
             {
                 return BadRequest(result.Errors);
