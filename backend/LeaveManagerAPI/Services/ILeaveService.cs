@@ -14,7 +14,7 @@ namespace LeaveManagerAPI.Services
 
         Task<Result> CancelRequestAsync(int id, string userId);
 
-        Task<Result<LeaveRequestResponse>> GetRequestByIdAsync(int id, string userId);
+        Task<Result<LeaveRequestResponse>> GetRequestByIdAsync(int id, string userId, bool isUse);
 
         Task<Result> ApproveRequestAsync(int id, string userId);
 
