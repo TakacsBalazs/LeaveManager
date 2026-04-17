@@ -6,6 +6,8 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { RequestLeaveComponent } from './pages/request-leave/request-leave.component';
 import { MyRequestsComponent } from './pages/my-requests/my-requests.component';
 import { RequestDetailsComponent } from './pages/request-details/request-details.component';
+import { ManagerDashboardComponent } from './pages/manager-dashboard/manager-dashboard.component';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -15,6 +17,7 @@ export const routes: Routes = [
         { path: 'dashboard', component: DashboardComponent },
         { path: 'request-leave', component: RequestLeaveComponent },
         { path: 'my-requests', component: MyRequestsComponent },
-        { path: 'requests/:id', component: RequestDetailsComponent}
+        { path: 'requests/:id', component: RequestDetailsComponent},
+        { path: 'manager-dashboard', component: ManagerDashboardComponent, canActivate: [adminGuard]}
     ]}
 ];
