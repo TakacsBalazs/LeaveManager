@@ -71,5 +71,33 @@ namespace LeaveManagerAPI.Controllers
             }
             return Ok(result.Data);
         }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpPost("{id}/approve")]
+        public async Task<IActionResult> ApproveRequest(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var result = await leaveService.ApproveRequestAsync(id, userId);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Errors);
+
+            }
+            return Ok(new { message = "Successful approve the leave request!" });
+        }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpPost("{id}/reject")]
+        public async Task<IActionResult> RejectRequest(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var result = await leaveService.RejectRequestAsync(id, userId);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Errors);
+
+            }
+            return Ok(new { message = "Successful reject the leave request!" });
+        }
     }
 }
