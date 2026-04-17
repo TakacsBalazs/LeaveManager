@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
 import { CreateLeaveRequestDto } from '../../models/leave';
 import { Observable } from 'rxjs';
+import { MessageResponse } from '../../models/api-responses';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ export class LeaveService {
 
   constructor(private http: HttpClient) { }
 
-  createLeaveRequest(data: CreateLeaveRequestDto ): Observable<any>{
-    return this.http.post<CreateLeaveRequestDto>(this.apiUrl, data);
+  createLeaveRequest(data: CreateLeaveRequestDto ): Observable<MessageResponse>{
+    return this.http.post<MessageResponse>(this.apiUrl, data);
   }
 }
