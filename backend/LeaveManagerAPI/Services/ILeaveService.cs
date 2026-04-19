@@ -27,5 +27,7 @@ namespace LeaveManagerAPI.Services
         Task<Result<LeaveBalanceResponse>> CreateLeaveBalanceAsync(CreateLeaveBalanceRequest request);
         
         Task<Result<LeaveBalanceResponse>> UpdateLeaveBalanceAsync(UpdateLeaveBalanceRequest request, int id);
+
+        Task<Result> DeleteLeaveBalanceAsync(int id);
     }
 }
