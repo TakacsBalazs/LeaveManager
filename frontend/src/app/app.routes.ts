@@ -21,6 +21,7 @@ export const routes: Routes = [
         { path: 'my-requests', component: MyRequestsComponent },
         { path: 'requests/:id', component: RequestDetailsComponent},
         { path: 'manager-dashboard', component: ManagerDashboardComponent, canActivate: [adminGuard]},
-        { path: 'user-list', component: UserListComponent, canActivate: [adminGuard]}
+        { path: 'user-list', component: UserListComponent, canActivate: [adminGuard]},
+        { path: 'leave-balance-list', component: LeaveBalanceListComponent, canActivate: [adminGuard]}
     ]}
 ];
