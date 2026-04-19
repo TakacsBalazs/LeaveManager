@@ -9,5 +9,7 @@ namespace LeaveManagerAPI.Services
         Task<Result<IEnumerable<UserResponse>>> GetUsersAsync();
 
         Task<Result<UserResponse>> CreateUserAsync(CreateUserRequest request);
+
+        Task<Result<UserResponse>> UpdateUserAsync(UpdateUserRequest request, string userId);
     }
 }
