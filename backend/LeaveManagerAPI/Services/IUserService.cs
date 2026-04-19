@@ -11,5 +11,7 @@ namespace LeaveManagerAPI.Services
         Task<Result<UserResponse>> CreateUserAsync(CreateUserRequest request);
 
         Task<Result<UserResponse>> UpdateUserAsync(UpdateUserRequest request, string userId);
+
+        Task<Result> DeleteUserAsync(string userId);
     }
 }
