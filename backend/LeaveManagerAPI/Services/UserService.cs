@@ -122,5 +122,23 @@ namespace LeaveManagerAPI.Services
 
             return Result<UserResponse>.Success(response);
         }
+
+        public async Task<Result> DeleteUserAsync(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if(user == null)
+            {
+                return Result.Failure("Invalid Id!");
+            }
+
+            var result = await userManager.DeleteAsync(user);
+            if(!result.Succeeded)
+            {
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                return Result.Failure(errors);
+            }
+
+            return Result.Success();
+        }
     }
 }
