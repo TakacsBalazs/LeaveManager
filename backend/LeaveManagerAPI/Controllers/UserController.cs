@@ -42,5 +42,17 @@ namespace LeaveManagerAPI.Controllers
 
             return Ok(result.Data);
         }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequest request, string id)
+        {
+            var result = await userService.UpdateUserAsync(request, id);
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.Errors);
+            }
+            return Ok(result.Data);
+        }
     }
 }
