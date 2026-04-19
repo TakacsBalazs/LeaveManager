@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CreateUserRequest, UpdateUserRequest, UserDto } from '../../models/user';
 import { UserService } from '../../core/services/user.service';
 import { UserFormComponent } from '../../components/user-form/user-form.component';
+import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-user-list',
-  imports: [UserFormComponent],
+  imports: [UserFormComponent, ConfirmModalComponent],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.scss'
 })
@@ -83,5 +84,25 @@ export class UserListComponent implements OnInit{
         }
       })
     }
+  }
+
+  onDelete(){
+    if(!this.idToDelete){
+      return;
+    }
+
+    this.userService.deleteUser(this.idToDelete).subscribe({
+      next: () => {
+        const userInd = this.data.findIndex(x => x.id == this.idToDelete);
+        this.data.splice(userInd, 1);
+        this.idToDelete = null;
+        this.isConfirmOpen = false;
+      }
+    })
+  }
+
+  openConfirm(id: string){
+    this.idToDelete = id;
+    this.isConfirmOpen = true;
   }
 }
