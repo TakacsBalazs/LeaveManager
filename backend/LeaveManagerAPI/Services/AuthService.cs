@@ -52,5 +52,29 @@ namespace LeaveManagerAPI.Services
             return Result<LoginResponse>.Success(response);
 
         }
+
+        public async Task<Result> ChangePasswordAsync(ChangePasswordRequest request, string userId)
+        {
+            var validate = await serviceProvider.ValidateRequestAsync<ChangePasswordRequest>(request);
+            if (!validate.IsSuccess)
+            {
+                return Result.Failure(validate.Errors);
+            }
+
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return Result.Failure("Invalid User!");
+            }
+
+            var changePassword = await userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
+            if (!changePassword.Succeeded)
+            {
+                var errors = changePassword.Errors.Select(x => x.Description).ToList();
+                return Result.Failure(errors);
+            }
+
+            return Result.Success();
+        }
     }
 }
