@@ -17,3 +17,8 @@ export interface UpdateUserRequest{
     email: string,
     roles: string[]
 }
+
+export interface UserDropdown{
+    id: string,
+    fullname: string
+}
