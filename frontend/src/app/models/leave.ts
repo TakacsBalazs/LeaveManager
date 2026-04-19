@@ -44,3 +44,7 @@ export interface CreateLeaveBalanceRequest{
     totalDays: number,
     usedDays: number
 }
+
+export interface UpdateLeaveBalanceRequest {
+    totalDays: number
+}
