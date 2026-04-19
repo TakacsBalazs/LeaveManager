@@ -357,5 +357,18 @@ namespace LeaveManagerAPI.Services
 
             return Result<LeaveBalanceResponse>.Success(response);
         }
+
+        public async Task<Result> DeleteLeaveBalanceAsync(int id)
+        {
+            var leaveBalance = await context.LeaveBalances.FindAsync(id);
+            if (leaveBalance == null)
+            {
+                return Result.Failure("Invalid Id!");
+            }
+            context.LeaveBalances.Remove(leaveBalance);
+            await context.SaveChangesAsync();
+
+            return Result.Success();
+        }
     }
 }
