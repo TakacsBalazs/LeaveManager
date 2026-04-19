@@ -36,3 +36,11 @@ export interface LeaveBalanceResponse{
     usedDays: number,
     remainingDays: number
 }
+
+export interface CreateLeaveBalanceRequest{
+    userId: string,
+    year: number,
+    type: string,
+    totalDays: number,
+    usedDays: number
+}
