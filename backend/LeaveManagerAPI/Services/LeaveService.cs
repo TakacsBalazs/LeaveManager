@@ -30,7 +30,7 @@ namespace LeaveManagerAPI.Services
                 UsedDays = x.UsedDays,
                 Year = x.Year,
                 Type = x.Type,
-                RemainingDays = x.RemainingDays     
+                RemainingDays = x.RemainingDays
             }).ToListAsync();
 
             var response = new DashboardResponse
@@ -256,6 +256,23 @@ namespace LeaveManagerAPI.Services
             }).ToListAsync();
 
             return Result<IEnumerable<LeaveRequestResponse>>.Success(response);
+        }
+
+        public async Task<Result<IEnumerable<LeaveBalanceResponse>>> GetAllLeaveBalancesAsync()
+        {
+            var response = await context.LeaveBalances.Select(x => new LeaveBalanceResponse
+            {
+                Id = x.Id,
+                Type = x.Type,
+                UsedDays = x.UsedDays,
+                TotalDays = x.TotalDays,
+                UserId = x.UserId,
+                UserFullname = x.User.FullName,
+                RemainingDays = x.RemainingDays,
+                Year = x.Year
+            }).ToListAsync();
+
+            return Result<IEnumerable<LeaveBalanceResponse>>.Success(response);
         }
     }
 }
