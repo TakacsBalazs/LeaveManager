@@ -77,5 +77,50 @@ namespace LeaveManagerAPI.Services
 
             return Result<IEnumerable<UserResponse>>.Success(response);
         }
+
+        public async Task<Result<UserResponse>> UpdateUserAsync(UpdateUserRequest request, string userId)
+        {
+            context.ChangeTracker.Clear();
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return Result<UserResponse>.Failure("Invalid Id!");
+            }
+
+            user.FullName = request.Fullname;
+            user.Email = request.Email;
+            user.UserName = request.Email;
+            var updateResult = await userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
+            {
+                var errors = updateResult.Errors.Select(x => x.Description).ToList();
+                return Result<UserResponse>.Failure(errors);
+            }
+
+            var currentRoles = await userManager.GetRolesAsync(user);
+            var removeRoles = await userManager.RemoveFromRolesAsync(user, currentRoles);
+            if (!removeRoles.Succeeded)
+            {
+                var errors = removeRoles.Errors.Select(x => x.Description).ToList();
+                return Result<UserResponse>.Failure(errors);
+            }
+
+            var addRoles = await userManager.AddToRolesAsync(user, request.Roles);
+            if (!addRoles.Succeeded)
+            {
+                var errors = addRoles.Errors.Select(x => x.Description).ToList();
+                return Result<UserResponse>.Failure(errors);
+            }
+
+            var response = new UserResponse
+            {
+                Id = user.Id,
+                Fullname = request.Fullname,
+                Email = request.Email,
+                Roles = request.Roles
+            };
+
+            return Result<UserResponse>.Success(response);
+        }
     }
 }
