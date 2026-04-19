@@ -75,4 +75,14 @@ export class AuthService {
   logout(){
     localStorage.removeItem('jwt_token');
   }
+  
+  changePassword(request: ChangePasswordRequest): Observable<MessageResponse>{
+    return this.http.post<MessageResponse>(`${this.apiUrl}/changepassword`, request).pipe(
+      tap({
+        next: () => {
+          this.logout();
+        }
+      })
+    );
+  }
 }
