@@ -1,4 +1,5 @@
 ﻿using LeaveManagerAPI.Common;
+using LeaveManagerAPI.Models.Requests;
 using LeaveManagerAPI.Models.Responses;
 
 namespace LeaveManagerAPI.Services
@@ -6,5 +7,7 @@ namespace LeaveManagerAPI.Services
     public interface IUserService
     {
         Task<Result<IEnumerable<UserResponse>>> GetUsersAsync();
+
+        Task<Result<UserResponse>> CreateUserAsync(CreateUserRequest request);
     }
 }
