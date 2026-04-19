@@ -65,5 +65,18 @@ namespace LeaveManagerAPI.Controllers
             }
             return Ok(new { message = "Successful delete the user!" });
         }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpGet("dropdown")]
+        public async Task<IActionResult> GetUsersDropdown()
+        {
+            var result = await userService.GetUsersDropdownsAsync();
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok(result.Data);
+        }
     }
 }
