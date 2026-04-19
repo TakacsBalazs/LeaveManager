@@ -30,5 +30,17 @@ namespace LeaveManagerAPI.Controllers
             }
             return Ok(result.Data);
         }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpPost]
+        public async Task<IActionResult> CreateLeaveBalance([FromBody] CreateLeaveBalanceRequest request)
+        {
+            var result = await leaveService.CreateLeaveBalanceAsync(request);
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.Errors);
+            }
+            return Ok(result.Data);
+        }
     }
 }
