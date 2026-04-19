@@ -57,7 +57,7 @@
 
                   <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button class="text-orange-600 hover:text-orange-900 bg-orange-50 hover:bg-orange-100 px-3 mr-4 py-1.5 transition rounded-md" (click)="openEditModal(leaveBalance)">Edit</button>
-                      <button class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1.5 transition rounded-md">Delete</button>
+                      <button class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1.5 transition rounded-md" (click)="openConfirm(leaveBalance.id)">Delete</button>
                   </td>
                 </tr>
               }
@@ -70,4 +70,12 @@
 
 @if (isModalOpen){
     <app-leave-balance-form [leaveBalance]="selectedLeaveBalance" (closeForm)="closeModal()" (saveForm)="handleLeaveBalance($event)" [users]="users" [errors]="errors"/>
+}
+
+@if (isConfirmOpen) {
+    <app-confirm-modal
+      title="Delete Balance"
+      message="Are you sure you want to delete this leave balance? All data will be lost."
+      (confirm)="onDelete()"
+      (cancel)="isConfirmOpen = false"/>
 }

@@ -4,10 +4,11 @@ import { CreateLeaveBalanceRequest, LeaveBalanceResponse, UpdateLeaveBalanceRequ
 import { LeaveBalanceFormComponent } from '../../components/leave-balance-form/leave-balance-form.component';
 import { UserService } from '../../core/services/user.service';
 import { UserDropdown } from '../../models/user';
+import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-leave-balance-list',
-  imports: [LeaveBalanceFormComponent],
+  imports: [LeaveBalanceFormComponent, ConfirmModalComponent],
   templateUrl: './leave-balance-list.component.html',
   styleUrl: './leave-balance-list.component.scss'
 })
@@ -18,6 +19,8 @@ export class LeaveBalanceListComponent implements OnInit{
   selectedLeaveBalance: LeaveBalanceResponse | null = null;
   errors: string[] = [];
   users: UserDropdown[] = [];
+  isConfirmOpen = false;
+  idToDelete: number | null = null;
 
   constructor(private leaveBalanceService: LeaveBalanceService, private userService: UserService) {}
 
@@ -84,5 +87,25 @@ export class LeaveBalanceListComponent implements OnInit{
         }
       });
     }
+  }
+
+  onDelete(){
+    if(!this.idToDelete){
+      return;
+    }
+
+    this.leaveBalanceService.deleteLeaveBalance(this.idToDelete).subscribe({
+      next: () => {
+        const leaveBalanceInd = this.data.findIndex(x => x.id == this.idToDelete);
+        this.data.splice(leaveBalanceInd, 1);
+        this.isConfirmOpen = false;
+        this.idToDelete = null;
+      }
+    })
+  }
+
+  openConfirm(id: number){
+    this.idToDelete = id;
+    this.isConfirmOpen = true;
   }
 }
