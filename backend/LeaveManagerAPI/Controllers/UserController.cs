@@ -29,5 +29,18 @@ namespace LeaveManagerAPI.Controllers
             }
             return Ok(result.Data);
         }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpPost]
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
+        {
+            var result = await userService.CreateUserAsync(request);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok(result.Data);
+        }
     }
 }
