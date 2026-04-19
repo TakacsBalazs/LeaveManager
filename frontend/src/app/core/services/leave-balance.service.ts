@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CreateLeaveBalanceRequest, LeaveBalanceResponse } from '../../models/leave';
+import { CreateLeaveBalanceRequest, LeaveBalanceResponse, UpdateLeaveBalanceRequest } from '../../models/leave';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -18,5 +18,9 @@ export class LeaveBalanceService {
 
   createLeaveBalance(request: CreateLeaveBalanceRequest): Observable<LeaveBalanceResponse>{
     return this.http.post<LeaveBalanceResponse>(this.apiUrl, request);
+  }
+
+  updateLeaveBalance(request: UpdateLeaveBalanceRequest, id: number): Observable<LeaveBalanceResponse>{
+    return this.http.put<LeaveBalanceResponse>(`${this.apiUrl}/${id}`, request);
   }
 }
