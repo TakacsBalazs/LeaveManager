@@ -4,10 +4,11 @@ import { LeaveRequestDto } from '../../models/leave';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
+import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-request-details',
-  imports: [],
+  imports: [ConfirmModalComponent],
   templateUrl: './request-details.component.html',
   styleUrl: './request-details.component.scss'
 })
@@ -17,6 +18,7 @@ export class RequestDetailsComponent implements OnInit{
   isLoading = true;
   id!: number;
   isManagerMode = false;
+  isCancelConfirmOpen = false;
 
   constructor(private leaveService: LeaveService, private route: ActivatedRoute, private router: Router, private location: Location, private authService: AuthService) {}
 
@@ -39,16 +41,15 @@ export class RequestDetailsComponent implements OnInit{
       next: (resp) => {
         this.data = resp;
         this.isLoading = false;
-        console.log(this.data)
       }
     })
   }
 
-  cancelTheRequest(id: number){
-    //check the confirm
-    this.leaveService.cancelTheRequests(id).subscribe({
+  cancelTheRequest(){
+    this.leaveService.cancelTheRequests(this.id).subscribe({
       next: () => {
         this.data!.status = 'Cancelled';
+        this.isCancelConfirmOpen = false;
       }
     })
   }
@@ -71,5 +72,9 @@ export class RequestDetailsComponent implements OnInit{
         this.data!.status = 'Approved';
       }
     })
+  }
+
+  openConfirmModal(){
+    this.isCancelConfirmOpen = true;
   }
 }
