@@ -140,5 +140,15 @@ namespace LeaveManagerAPI.Services
 
             return Result.Success();
         }
+
+        public async Task<Result<IEnumerable<UserDropdownResponse>>> GetUsersDropdownsAsync()
+        {
+            var response = await context.Users.OrderBy(x => x.FullName).Select(x => new UserDropdownResponse
+            {
+                Id = x.Id,
+                Fullname = x.FullName
+            }).ToListAsync();
+            return Result<IEnumerable<UserDropdownResponse>>.Success(response);
+        }
     }
 }
