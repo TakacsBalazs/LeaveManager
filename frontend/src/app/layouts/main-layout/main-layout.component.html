@@ -1,29 +1,66 @@
 <div class="min-h-screen bg-gray-100">
   
     <nav class="bg-blue-600 shadow-md">
-      <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-[1850px] mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           
           <div class="flex items-center">
             <span class="text-white font-bold text-xl">LeaveManager</span>
-            <div class="ml-10 flex items-baseline space-x-4">
+            
+            <div class="flex items-baseline space-x-2 ml-5">
               <a routerLink="dashboard" class="text-white hover:bg-blue-500 px-3 py-2 rounded-md font-medium transition">Dashboard</a>
+              
+              <div class="relative">
+                <button (click)="toggleMainMenuDropdown()" class="flex items-center text-white hover:bg-blue-500 px-3 py-2 rounded-md font-medium transition">
+                  <span>My Leave</span>
+                  <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+          
+                @if(isMainMenuDropdownOpen){
+                  <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-50">
+                    <a routerLink="request-leave" (click)="isMainMenuDropdownOpen = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Request Leave</a>
+                    <a routerLink="my-requests" (click)="isMainMenuDropdownOpen = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Requests</a>
+                  </div>
+                }
+              </div>
+              
+              @if(isAdmin){
+                <div class="relative">
+                  <button (click)="toggleAdminDropdown()" class="flex items-center text-white hover:bg-blue-500 px-3 py-2 rounded-md font-medium transition">
+                    <span>Manage</span>
+                    <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+    
+                  @if(isAdminDropdownOpen){
+                    <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-50">
+                      <a routerLink="manager-dashboard" (click)="isAdminDropdownOpen = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Manager Dashboard</a>
+                      <a routerLink="user-list" (click)="isAdminDropdownOpen = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Users</a>
+                      <a routerLink="leave-balance-list" (click)="isAdminDropdownOpen = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Leave Balance</a>
+                    </div>
+                  }
+                </div>
+              }
             </div>
-            <div class="ml-4 flex items-baseline space-x-4">
-              <a routerLink="request-leave" class="text-white hover:bg-blue-500 px-3 py-2 rounded-md font-medium transition">Request Leave</a>
-            </div>
-            <div class="ml-4 flex items-baseline space-x-4">
-              <a routerLink="my-requests" class="text-white hover:bg-blue-500 px-3 py-2 rounded-md font-medium transition">My Requests</a>
-            </div>
-            @if(isAdmin){
-              <div class="ml-4 flex items-baseline space-x-4">
-                <a routerLink="manager-dashboard" class="text-white hover:bg-blue-500 px-3 py-2 rounded-md font-medium transition">Manager Dashboard</a>
+          </div>
+    
+          <div class="relative">
+            <button (click)="toggleProfileDropdown()" class="flex items-center text-blue-100 hover:text-white font-medium focus:outline-none transition">
+              <span>My Profile</span>
+              <svg class="ml-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+    
+            @if(isProfileDropdownOpen){
+              <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-50">
+                <div class="border-t border-gray-100"></div>
+                <button (click)="logout()" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">Logout</button>
               </div>
             }
-          </div>
-  
-          <div>
-            <button class="text-blue-100 hover:text-white font-medium">Logout</button>
           </div>
   
         </div>
@@ -34,4 +71,4 @@
         <router-outlet />
     </main>
   
-  </div>
+</div>
