@@ -16,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
-    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, true));
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(null, true));
 });
 
 builder.Services.AddControllers();
@@ -41,7 +41,8 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 builder.Services.AddScoped<DatabaseSeeder>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ILeaveService, LeaveService>();  
+builder.Services.AddScoped<ILeaveService, LeaveService>();
+builder.Services.AddScoped<IUserService, UserService>();   
 
 builder.Services.AddAuthentication(options =>
 {
