@@ -274,5 +274,51 @@ namespace LeaveManagerAPI.Services
 
             return Result<IEnumerable<LeaveBalanceResponse>>.Success(response);
         }
+
+        public async Task<Result<LeaveBalanceResponse>> CreateLeaveBalanceAsync(CreateLeaveBalanceRequest request)
+        {
+            var validate = await serviceProvider.ValidateRequestAsync<CreateLeaveBalanceRequest>(request);
+            if (!validate.IsSuccess)
+            {
+                return Result<LeaveBalanceResponse>.Failure(validate.Errors);
+            }
+
+            var user = await context.Users.FindAsync(request.UserId);
+            if(user == null)
+            {
+                return Result<LeaveBalanceResponse>.Failure("User not found!");
+            }
+
+            var hasSameLeaveBalance = await context.LeaveBalances.AnyAsync(x => x.Year == request.Year && x.UserId == request.UserId && x.Type == request.Type);
+            if(hasSameLeaveBalance)
+            {
+                return Result<LeaveBalanceResponse>.Failure("There is another leave balance!");
+            }
+
+            var leaveBalance = new LeaveBalance
+            {
+                UserId = request.UserId,
+                Type = request.Type,
+                TotalDays = request.TotalDays,
+                UsedDays = request.UsedDays,
+                Year = request.Year
+            };
+            context.LeaveBalances.Add(leaveBalance);
+            await context.SaveChangesAsync();
+
+            var response = new LeaveBalanceResponse
+            {
+                Id = leaveBalance.Id,
+                UserId = leaveBalance.UserId,
+                UserFullname = user.FullName,
+                Type = leaveBalance.Type,
+                TotalDays = leaveBalance.TotalDays,
+                UsedDays = leaveBalance.UsedDays,
+                Year = leaveBalance.Year,
+                RemainingDays = leaveBalance.RemainingDays
+            };
+
+            return Result<LeaveBalanceResponse>.Success(response);
+        }
     }
 }
