@@ -320,5 +320,42 @@ namespace LeaveManagerAPI.Services
 
             return Result<LeaveBalanceResponse>.Success(response);
         }
+
+        public async Task<Result<LeaveBalanceResponse>> UpdateLeaveBalanceAsync(UpdateLeaveBalanceRequest request, int id)
+        {
+            var validate = await serviceProvider.ValidateRequestAsync<UpdateLeaveBalanceRequest>(request);
+            if (!validate.IsSuccess)
+            {
+                return Result<LeaveBalanceResponse>.Failure(validate.Errors);
+            }
+
+            var leaveBalance = await context.LeaveBalances.Include(x => x.User).FirstOrDefaultAsync(x  => x.Id == id);
+            if(leaveBalance == null)
+            {
+                return Result<LeaveBalanceResponse>.Failure("Invalid Id!");
+            }
+
+            if(leaveBalance.UsedDays > request.TotalDays)
+            {
+                return Result<LeaveBalanceResponse>.Failure("Total days cannot less than used days!");
+            }
+
+            leaveBalance.TotalDays = request.TotalDays;
+            await context.SaveChangesAsync();
+
+            var response = new LeaveBalanceResponse
+            {
+                Id = leaveBalance.Id,
+                UserId = leaveBalance.UserId,
+                UserFullname = leaveBalance.User.FullName,
+                Type = leaveBalance.Type,
+                TotalDays = leaveBalance.TotalDays,
+                UsedDays = leaveBalance.UsedDays,
+                Year = leaveBalance.Year,
+                RemainingDays = leaveBalance.RemainingDays
+            };
+
+            return Result<LeaveBalanceResponse>.Success(response);
+        }
     }
 }
