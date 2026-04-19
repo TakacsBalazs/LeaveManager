@@ -1,7 +1,9 @@
 ﻿using LeaveManagerAPI.Models.Requests;
 using LeaveManagerAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LeaveManagerAPI.Controllers
 {
@@ -26,6 +28,19 @@ namespace LeaveManagerAPI.Controllers
             }
 
             return Ok(result.Data);
+        }
+
+        [Authorize]
+        [HttpPost("changepassword")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var result = await authService.ChangePasswordAsync(request, userId);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Errors);
+            }
+            return Ok(new { message = "Successful change password!" });
         }
 
     }
