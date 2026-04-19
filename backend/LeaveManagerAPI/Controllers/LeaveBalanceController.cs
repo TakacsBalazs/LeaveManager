@@ -54,5 +54,17 @@ namespace LeaveManagerAPI.Controllers
             }
             return Ok(result.Data);
         }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteLeaveBalance(int id)
+        {
+            var result = await leaveService.DeleteLeaveBalanceAsync(id);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Errors);
+            }
+            return Ok(new { message = "Successful delete the leave balance!" });
+        }
     }
 }
