@@ -23,5 +23,7 @@ namespace LeaveManagerAPI.Services
         Task<Result<IEnumerable<LeaveRequestResponse>>> GetAllPendingRequestsAsync();
 
         Task<Result<IEnumerable<LeaveBalanceResponse>>> GetAllLeaveBalancesAsync();
+
+        Task<Result<LeaveBalanceResponse>> CreateLeaveBalanceAsync(CreateLeaveBalanceRequest request);
     }
 }
