@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
+import { MessageResponse } from '../../models/api-responses';
+import { ChangePasswordRequest } from '../../models/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -68,5 +70,9 @@ export class AuthService {
   }
 
   return role === 'Admin';
+  }
+
+  logout(){
+    localStorage.removeItem('jwt_token');
   }
 }
