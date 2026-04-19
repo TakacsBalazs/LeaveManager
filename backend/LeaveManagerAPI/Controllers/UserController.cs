@@ -54,5 +54,16 @@ namespace LeaveManagerAPI.Controllers
             }
             return Ok(result.Data);
         }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(string id) {
+            var result = await userService.DeleteUserAsync(id);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Errors);
+            }
+            return Ok(new { message = "Successful delete the user!" });
+        }
     }
 }
