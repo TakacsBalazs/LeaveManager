@@ -26,3 +26,13 @@ export interface LeaveRequestDto{
     requesterName: string
 }
 
+export interface LeaveBalanceResponse{
+    id: number,
+    userId: string,
+    userFullname: string,
+    year: number,
+    type: string,
+    totalDays: number,
+    usedDays: number,
+    remainingDays: number
+}
