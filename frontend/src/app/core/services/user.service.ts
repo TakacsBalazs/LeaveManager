@@ -27,4 +27,8 @@ export class UserService {
   deleteUser(id: string): Observable<MessageResponse>{
     return this.http.delete<MessageResponse>(`${this.apiUrl}/${id}`);
   }
+
+  getUsersForDropdown(): Observable<UserDropdown[]>{
+    return this.http.get<UserDropdown[]>(`${this.apiUrl}/dropdown`);
+  }
 }
