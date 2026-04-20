@@ -167,5 +167,16 @@ namespace LeaveManagerAPI.Services
             }).ToListAsync();
             return Result<IEnumerable<UserDropdownResponse>>.Success(response);
         }
+
+        public async Task<Result<IEnumerable<RoleResponse>>> GetRolesAsync()
+        {
+            var response = await context.Roles.Select(x => new RoleResponse
+            {
+                Id = x.Id,
+                Name = x.Name!
+            }).ToListAsync();
+
+            return Result<IEnumerable<RoleResponse>>.Success(response);
+        }
     }
 }
