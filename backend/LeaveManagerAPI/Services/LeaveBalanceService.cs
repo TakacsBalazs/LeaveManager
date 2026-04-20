@@ -19,9 +19,25 @@ namespace LeaveManagerAPI.Services
             this.serviceProvider = serviceProvider;
 
         }
-        public async Task<Result<IEnumerable<LeaveBalanceResponse>>> GetAllLeaveBalancesAsync()
+        public async Task<Result<IEnumerable<LeaveBalanceResponse>>> GetAllLeaveBalancesAsync(GetAllLeaveBalancesRequest request)
         {
-            var response = await context.LeaveBalances.Select(x => new LeaveBalanceResponse
+            var leaveBalances = context.LeaveBalances.AsQueryable();
+            if (!string.IsNullOrEmpty(request.UserFullname))
+            {
+                leaveBalances = leaveBalances.Where(x => x.User.FullName.Contains(request.UserFullname));
+            }
+
+            if (request.Year.HasValue)
+            {
+                leaveBalances = leaveBalances.Where(x => x.Year == request.Year);
+            }
+
+            if(request.Type.HasValue)
+            {
+                leaveBalances = leaveBalances.Where(x => x.Type == request.Type);
+            }
+
+            var response = await leaveBalances.Select(x => new LeaveBalanceResponse
             {
                 Id = x.Id,
                 Type = x.Type,
