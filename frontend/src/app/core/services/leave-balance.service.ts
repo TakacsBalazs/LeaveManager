@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CreateLeaveBalanceRequest, LeaveBalanceResponse, UpdateLeaveBalanceRequest } from '../../models/leave-balance';
+import { CreateLeaveBalanceRequest, LeaveBalanceResponse, FilterLeaveBalance, UpdateLeaveBalanceRequest } from '../../models/leave-balance';
 import { Observable } from 'rxjs';
 import { MessageResponse } from '../../models/api-responses';
+import { buildCleanParams } from '../utils/http.utils';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,10 @@ export class LeaveBalanceService {
   constructor(private http: HttpClient) { }
 
   
-  getAllLeaveBalances(): Observable<LeaveBalanceResponse[]>{
-    return this.http.get<LeaveBalanceResponse[]>(this.apiUrl)
+  getAllLeaveBalances(filters: FilterLeaveBalance | null): Observable<LeaveBalanceResponse[]>{
+    const cleanParams = buildCleanParams(filters);
+
+    return this.http.get<LeaveBalanceResponse[]>(this.apiUrl, {params: cleanParams});
   }
 
   createLeaveBalance(request: CreateLeaveBalanceRequest): Observable<LeaveBalanceResponse>{
