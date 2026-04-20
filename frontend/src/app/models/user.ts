@@ -22,3 +22,14 @@ export interface UserDropdown{
     id: string,
     fullname: string
 }
+
+export interface FilterUsersRequest{
+    fullname: string | null,
+    email: string | null,
+    roles: string[] | null
+}
+
+export interface Role{
+    id: string
+    name: string
+}
