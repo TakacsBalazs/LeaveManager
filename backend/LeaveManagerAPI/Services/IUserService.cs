@@ -6,7 +6,7 @@ namespace LeaveManagerAPI.Services
 {
     public interface IUserService
     {
-        Task<Result<IEnumerable<UserResponse>>> GetUsersAsync();
+        Task<Result<IEnumerable<UserResponse>>> GetUsersAsync(GetUsersRequest request);
 
         Task<Result<UserResponse>> CreateUserAsync(CreateUserRequest request);
 
