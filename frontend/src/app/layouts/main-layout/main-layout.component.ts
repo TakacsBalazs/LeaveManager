@@ -3,6 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ChangePasswordFormComponent } from "../../components/change-password-form/change-password-form.component";
 import { ChangePasswordRequest } from '../../models/auth';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-main-layout',
@@ -18,7 +19,8 @@ export class MainLayoutComponent implements OnInit{
   isAdminDropdownOpen = false;
   isProfileDropdownOpen = false;
   isMainMenuDropdownOpen = false;
-  constructor(private authService: AuthService, private router: Router) {}
+  isMobileMenuOpen = false;
+  constructor(private authService: AuthService, private router: Router, private toast: ToastrService) {}
 
   ngOnInit(): void {
     this.isAdmin = this.authService.isAdmin();
@@ -43,9 +45,11 @@ export class MainLayoutComponent implements OnInit{
       next: () => {
         this.closePasswordModal();
         this.router.navigate(['/login']);
+        this.toast.success("Successfully changed the password!", 'Success');
       },
       error: (err) => {
         this.errors = err.error;
+        this.toast.error("Couldn't change the password!", 'Error');
       }
     })
   }
@@ -68,4 +72,7 @@ export class MainLayoutComponent implements OnInit{
     this.isAdminDropdownOpen = false;
   }
 
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
 }
