@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LeaveBalanceService } from '../../core/services/leave-balance.service';
-import { CreateLeaveBalanceRequest, LeaveBalanceResponse, UpdateLeaveBalanceRequest } from '../../models/leave';
+import { CreateLeaveBalanceRequest, LeaveBalanceResponse, UpdateLeaveBalanceRequest } from '../../models/leave-balance';
 import { LeaveBalanceFormComponent } from '../../components/leave-balance-form/leave-balance-form.component';
 import { UserService } from '../../core/services/user.service';
 import { UserDropdown } from '../../models/user';

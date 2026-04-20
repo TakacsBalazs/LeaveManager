@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LeaveRequestDto } from '../../models/leave';
+import { LeaveRequestDto } from '../../models/leave-request';
 import { LeaveService } from '../../core/services/leave.service';
 import { RouterLink } from '@angular/router';
 

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CreateLeaveBalanceRequest, LeaveBalanceResponse, UpdateLeaveBalanceRequest } from '../../models/leave';
+import { CreateLeaveBalanceRequest, LeaveBalanceResponse, UpdateLeaveBalanceRequest } from '../../models/leave-balance';
 import { Observable } from 'rxjs';
 import { MessageResponse } from '../../models/api-responses';
 

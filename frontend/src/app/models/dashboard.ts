@@ -1,4 +1,4 @@
-import { LeaveBalanceDto } from "./leave";
+import { LeaveBalanceDto } from "./leave-balance";
 
 export interface DashboardDto {
     balances: LeaveBalanceDto[];

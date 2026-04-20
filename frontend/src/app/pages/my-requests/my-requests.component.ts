@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LeaveService } from '../../core/services/leave.service';
-import { LeaveRequestDto } from '../../models/leave';
+import { LeaveRequestDto } from '../../models/leave-request';
 import { RouterLink } from "@angular/router";
 import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-modal.component';
 

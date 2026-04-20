@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CreateLeaveRequestDto, LeaveRequestDto } from '../../models/leave';
+import { CreateLeaveRequestDto, LeaveRequestDto } from '../../models/leave-request';
 import { Observable } from 'rxjs';
 import { MessageResponse } from '../../models/api-responses';
 

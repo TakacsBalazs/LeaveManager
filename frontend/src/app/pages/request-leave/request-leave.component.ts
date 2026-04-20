@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
-import { CreateLeaveRequestDto } from '../../models/leave';
+import { CreateLeaveRequestDto } from '../../models/leave-request';
 import { LeaveService } from '../../core/services/leave.service';
 import { Router } from '@angular/router';
 

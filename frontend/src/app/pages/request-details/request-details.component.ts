@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LeaveService } from '../../core/services/leave.service';
-import { LeaveRequestDto } from '../../models/leave';
+import { LeaveRequestDto } from '../../models/leave-request';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';

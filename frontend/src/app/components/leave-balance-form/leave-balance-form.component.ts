@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CreateLeaveBalanceRequest, LeaveBalanceResponse } from '../../models/leave';
+import { CreateLeaveBalanceRequest, LeaveBalanceResponse } from '../../models/leave-balance';
 import { UserDropdown } from '../../models/user';
 
 @Component({
