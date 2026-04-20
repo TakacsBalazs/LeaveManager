@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { LeaveBalanceService } from '../../core/services/leave-balance.service';
-import { CreateLeaveBalanceRequest, LeaveBalanceResponse, UpdateLeaveBalanceRequest } from '../../models/leave-balance';
+import { CreateLeaveBalanceRequest, LeaveBalanceResponse, FilterLeaveBalance, UpdateLeaveBalanceRequest } from '../../models/leave-balance';
 import { LeaveBalanceFormComponent } from '../../components/leave-balance-form/leave-balance-form.component';
 import { UserService } from '../../core/services/user.service';
 import { UserDropdown } from '../../models/user';
 import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-modal.component';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-leave-balance-list',
-  imports: [LeaveBalanceFormComponent, ConfirmModalComponent],
+  imports: [LeaveBalanceFormComponent, ConfirmModalComponent, ReactiveFormsModule],
   templateUrl: './leave-balance-list.component.html',
   styleUrl: './leave-balance-list.component.scss'
 })
@@ -22,10 +23,16 @@ export class LeaveBalanceListComponent implements OnInit{
   isConfirmOpen = false;
   idToDelete: number | null = null;
 
+  filterForm: FormGroup = new FormGroup({
+    userFullname: new FormControl(''),
+    year: new FormControl(''),
+    type: new FormControl(0)
+  })
+
   constructor(private leaveBalanceService: LeaveBalanceService, private userService: UserService) {}
 
   ngOnInit(): void {
-    this.leaveBalanceService.getAllLeaveBalances().subscribe({
+    this.leaveBalanceService.getAllLeaveBalances(null).subscribe({
       next: (resp) => {
         this.data = resp;
         this.isLoading = false;
@@ -64,9 +71,11 @@ export class LeaveBalanceListComponent implements OnInit{
           const leaveBalanceInd = this.data.findIndex(x => x.id == this.selectedLeaveBalance!.id);
           this.data[leaveBalanceInd] = resp;
           this.closeModal();
+          this.toast.success("Successfully edited the leave balance!", 'Success');
         },
         error: (err) => {
           this.errors = err.error;
+          this.toast.error("Couldn't edit the leave balance!", 'Error');
         }
       })
     } else {
@@ -81,9 +90,11 @@ export class LeaveBalanceListComponent implements OnInit{
         next: (resp) => {
           this.data.push(resp);
           this.closeModal();
+          this.toast.success("Successfully created the leave balance!", 'Success');
         },
         error: (err) => {
           this.errors = err.error;
+          this.toast.error("Couldn't create the leave balance!", 'Error');
         }
       });
     }
@@ -100,6 +111,10 @@ export class LeaveBalanceListComponent implements OnInit{
         this.data.splice(leaveBalanceInd, 1);
         this.isConfirmOpen = false;
         this.idToDelete = null;
+        this.toast.success("Successfully deleted the leave balance!", 'Success');
+      },
+      error: () => {
+        this.toast.error("Couldn't delete the leave balance!", 'Error');
       }
     })
   }
@@ -107,5 +122,23 @@ export class LeaveBalanceListComponent implements OnInit{
   openConfirm(id: number){
     this.idToDelete = id;
     this.isConfirmOpen = true;
+  }
+
+  onSubmitQuery(){
+    const filter: FilterLeaveBalance = {
+      userFullname: this.filterForm.value.userFullname,
+      year: this.filterForm.value.year,
+      type: this.filterForm.value.type,
+    }
+
+    this.leaveBalanceService.getAllLeaveBalances(filter).subscribe({
+      next: (resp) => {
+        this.data = resp;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+      }
+    })
   }
 }
