@@ -6,7 +6,7 @@ namespace LeaveManagerAPI.Services
 {
     public interface ILeaveBalanceService
     {
-        Task<Result<IEnumerable<LeaveBalanceResponse>>> GetAllLeaveBalancesAsync();
+        Task<Result<IEnumerable<LeaveBalanceResponse>>> GetAllLeaveBalancesAsync(GetAllLeaveBalancesRequest request);
 
         Task<Result<LeaveBalanceResponse>> CreateLeaveBalanceAsync(CreateLeaveBalanceRequest request);
 
