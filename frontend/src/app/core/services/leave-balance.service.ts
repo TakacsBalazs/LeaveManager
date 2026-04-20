@@ -4,12 +4,13 @@ import { CreateLeaveBalanceRequest, LeaveBalanceResponse, FilterLeaveBalance, Up
 import { Observable } from 'rxjs';
 import { MessageResponse } from '../../models/api-responses';
 import { buildCleanParams } from '../utils/http.utils';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LeaveBalanceService {
-  private apiUrl = "https://localhost:7171/api/leavebalances"; 
+  private apiUrl = `${environment.apiUrl}/leavebalances`; 
 
   constructor(private http: HttpClient) { }
 

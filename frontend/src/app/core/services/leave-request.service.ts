@@ -3,13 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { CreateLeaveRequestDto, LeaveRequestDto } from '../../models/leave-request';
 import { Observable } from 'rxjs';
 import { MessageResponse } from '../../models/api-responses';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LeaveRequestService {
 
-  private apiUrl = "https://localhost:7171/api/leaverequests"; 
+  private apiUrl = `${environment.apiUrl}/leaverequests`; 
 
   constructor(private http: HttpClient) { }
 

@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 import { CreateUserRequest, FilterUsersRequest, Role, UpdateUserRequest, UserDropdown, UserDto } from '../../models/user';
 import { MessageResponse } from '../../models/api-responses';
 import { buildCleanParams } from '../utils/http.utils';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = "https://localhost:7171/api/users"
+  private apiUrl = `${environment.apiUrl}/users`
 
   constructor(private http: HttpClient) { }
 
