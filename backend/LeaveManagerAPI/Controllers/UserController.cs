@@ -20,9 +20,9 @@ namespace LeaveManagerAPI.Controllers
 
         [Authorize(Roles = UserRoles.Admin)]
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers([FromQuery] GetUsersRequest request)
         {
-            var result = await userService.GetUsersAsync();
+            var result = await userService.GetUsersAsync(request);
             if(!result.IsSuccess)
             {
                 return BadRequest(result.Errors);
