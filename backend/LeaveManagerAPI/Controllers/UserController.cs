@@ -78,5 +78,17 @@ namespace LeaveManagerAPI.Controllers
 
             return Ok(result.Data);
         }
+
+        [Authorize]
+        [HttpGet("roles")]
+        public async Task<IActionResult> GetRoles()
+        {
+            var result = await userService.GetRolesAsync();
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Errors);
+            }
+            return Ok(result.Data);
+        }
     }
 }
