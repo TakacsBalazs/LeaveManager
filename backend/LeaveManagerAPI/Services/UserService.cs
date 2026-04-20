@@ -64,9 +64,26 @@ namespace LeaveManagerAPI.Services
             return Result<UserResponse>.Success(response);
         }
 
-        public async Task<Result<IEnumerable<UserResponse>>> GetUsersAsync()
+        public async Task<Result<IEnumerable<UserResponse>>> GetUsersAsync(GetUsersRequest request)
         {
-            var response = await context.Users.Select(user => new UserResponse
+            var users = context.Users.AsQueryable();
+            if (!string.IsNullOrEmpty(request.Fullname))
+            {
+                users = users.Where(x => x.FullName.Contains(request.Fullname));
+            }
+
+            if (!string.IsNullOrEmpty(request.Email))
+            {
+                users = users.Where(x => x.Email!.Contains(request.Email));
+            }
+
+            if(request.Roles != null && request.Roles.Any())
+            {
+                var hasRoles = context.UserRoles.Where(x => request.Roles.Contains(x.RoleId)).Select(x => x.UserId);
+                users = users.Where(x => hasRoles.Contains(x.Id));
+            }
+
+            var response = await users.Select(user => new UserResponse
             {
                 Id = user.Id,
                 Fullname = user.FullName,
