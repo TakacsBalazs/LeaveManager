@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LeaveService } from '../../core/services/leave.service';
+import { LeaveRequestService } from '../../core/services/leave-request.service';
 import { LeaveRequestDto } from '../../models/leave-request';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -20,7 +20,7 @@ export class RequestDetailsComponent implements OnInit{
   isManagerMode = false;
   isCancelConfirmOpen = false;
 
-  constructor(private leaveService: LeaveService, private route: ActivatedRoute, private router: Router, private location: Location, private authService: AuthService) {}
+  constructor(private leaveRequestService: LeaveRequestService, private route: ActivatedRoute, private router: Router, private location: Location, private authService: AuthService) {}
 
   ngOnInit(): void{
     const idParam = this.route.snapshot.paramMap.get('id');
@@ -37,7 +37,7 @@ export class RequestDetailsComponent implements OnInit{
       this.isManagerMode = true;
     }
 
-    this.leaveService.getRequestById(this.id).subscribe({
+    this.leaveRequestService.getRequestById(this.id).subscribe({
       next: (resp) => {
         this.data = resp;
         this.isLoading = false;
@@ -46,7 +46,7 @@ export class RequestDetailsComponent implements OnInit{
   }
 
   cancelTheRequest(){
-    this.leaveService.cancelTheRequests(this.id).subscribe({
+    this.leaveRequestService.cancelTheRequests(this.id).subscribe({
       next: () => {
         this.data!.status = 'Cancelled';
         this.isCancelConfirmOpen = false;
@@ -59,7 +59,7 @@ export class RequestDetailsComponent implements OnInit{
   }
 
   onReject(){
-    this.leaveService.rejectRequest(this.id).subscribe({
+    this.leaveRequestService.rejectRequest(this.id).subscribe({
       next: () => {
         this.data!.status = 'Rejected';
       }
@@ -67,7 +67,7 @@ export class RequestDetailsComponent implements OnInit{
   }
 
   onApprove(){
-    this.leaveService.approveRequest(this.id).subscribe({
+    this.leaveRequestService.approveRequest(this.id).subscribe({
       next: () => {
         this.data!.status = 'Approved';
       }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LeaveRequestDto } from '../../models/leave-request';
-import { LeaveService } from '../../core/services/leave.service';
+import { LeaveRequestService } from '../../core/services/leave-request.service'; 
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -14,10 +14,10 @@ export class ManagerDashboardComponent implements OnInit{
   data: LeaveRequestDto[] = [];
   isLoading = true;
 
-  constructor(private leaveService: LeaveService){}
+  constructor(private leaveRequestService: LeaveRequestService){}
 
   ngOnInit(): void {
-    this.leaveService.getAllPendingRequests().subscribe({
+    this.leaveRequestService.getAllPendingRequests().subscribe({
       next: (resp) => {
         this.data = resp;
         this.isLoading = false;
@@ -26,7 +26,7 @@ export class ManagerDashboardComponent implements OnInit{
   }
 
   onReject(id: number){
-    this.leaveService.rejectRequest(id).subscribe({
+    this.leaveRequestService.rejectRequest(id).subscribe({
       next: () => {
         const rejectedRequestInd = this.data.findIndex(x => x.id === id);
         if(rejectedRequestInd !== -1){
@@ -37,7 +37,7 @@ export class ManagerDashboardComponent implements OnInit{
   }
 
   onApprove(id: number){
-    this.leaveService.approveRequest(id).subscribe({
+    this.leaveRequestService.approveRequest(id).subscribe({
       next: () => {
         const approvedRequestInd = this.data.findIndex(x => x.id === id);
         if(approvedRequestInd !== -1){

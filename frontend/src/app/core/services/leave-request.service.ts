@@ -7,7 +7,8 @@ import { MessageResponse } from '../../models/api-responses';
 @Injectable({
   providedIn: 'root'
 })
-export class LeaveService {
+export class LeaveRequestService {
+
   private apiUrl = "https://localhost:7171/api/leaverequests"; 
 
   constructor(private http: HttpClient) { }

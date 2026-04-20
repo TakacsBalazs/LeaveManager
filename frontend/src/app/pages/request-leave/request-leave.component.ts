@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { CreateLeaveRequestDto } from '../../models/leave-request';
-import { LeaveService } from '../../core/services/leave.service';
+import { LeaveRequestService } from '../../core/services/leave-request.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 export class RequestLeaveComponent {
   minDate: string;
   errors: string[] | null = null;
-  constructor(private leaveService: LeaveService, private router: Router){
+  constructor(private leaveRequestService: LeaveRequestService, private router: Router){
     this.minDate = new Date().toISOString().split('T')[0];
   }
 
@@ -42,7 +42,7 @@ export class RequestLeaveComponent {
       reason: formValue.reason ? formValue.reason : null
     }
 
-    this.leaveService.createLeaveRequest(requestDto).subscribe({
+    this.leaveRequestService.createLeaveRequest(requestDto).subscribe({
       next: () => {
         this.router.navigate(['/app/dashboard'])
       },

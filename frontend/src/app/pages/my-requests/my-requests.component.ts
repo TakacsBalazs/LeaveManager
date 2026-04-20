@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LeaveService } from '../../core/services/leave.service';
+import { LeaveRequestService } from '../../core/services/leave-request.service'; 
 import { LeaveRequestDto } from '../../models/leave-request';
 import { RouterLink } from "@angular/router";
 import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-modal.component';
@@ -17,10 +17,10 @@ export class MyRequestsComponent implements OnInit{
   isConfirmOpen = false;
   idToCancel: number | null = null;
 
-  constructor(private leaveService: LeaveService) {}
+  constructor(private leaveRequestService: LeaveRequestService) {}
 
   ngOnInit(): void {
-    this.leaveService.getMyLeaveRequests().subscribe({
+    this.leaveRequestService.getMyLeaveRequests().subscribe({
       next: (data) => {
         this.data = data;
         this.isLoading = false;
@@ -32,7 +32,7 @@ export class MyRequestsComponent implements OnInit{
     if(!this.idToCancel){
       return;
     }
-    this.leaveService.cancelTheRequests(this.idToCancel).subscribe({
+    this.leaveRequestService.cancelTheRequests(this.idToCancel).subscribe({
       next: () => {
         const requestToUpdate = this.data.find(x => x.id === this.idToCancel);
         if(requestToUpdate){
