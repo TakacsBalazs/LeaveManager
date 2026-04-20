@@ -21,9 +21,9 @@ namespace LeaveManagerAPI.Controllers
 
         [Authorize(Roles = UserRoles.Admin)]
         [HttpGet]
-        public async Task<IActionResult> GetAllLeaveBalances()
+        public async Task<IActionResult> GetAllLeaveBalances([FromQuery] GetAllLeaveBalancesRequest request)
         {
-            var result = await leaveBalanceService.GetAllLeaveBalancesAsync();
+            var result = await leaveBalanceService.GetAllLeaveBalancesAsync(request);
             if(!result.IsSuccess)
             {
                 return BadRequest(result.Errors);
