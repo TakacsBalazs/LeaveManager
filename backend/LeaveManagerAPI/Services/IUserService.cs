@@ -15,5 +15,7 @@ namespace LeaveManagerAPI.Services
         Task<Result> DeleteUserAsync(string userId);
 
         Task<Result<IEnumerable<UserDropdownResponse>>> GetUsersDropdownsAsync();
+
+        Task<Result<IEnumerable<RoleResponse>>> GetRolesAsync();
     }
 }
