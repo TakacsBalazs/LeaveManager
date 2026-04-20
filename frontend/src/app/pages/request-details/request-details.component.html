@@ -17,6 +17,15 @@
         }
     </div>
   
+    @if (errors?.length){
+      <div class="mb-4 p-3 bg-red-100 border-l-4 border-red-500 text-red-700 rounded shadow-sm">
+        <p class="font-semibold">Invalid Form:</p>
+        @for (error of errors; track $index) {
+            <p>{{ error }}</p>
+        }
+      </div>
+    }
+
     @if(isLoading) {
       <div class="flex justify-center items-center py-20">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>

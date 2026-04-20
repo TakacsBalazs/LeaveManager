@@ -3,6 +3,7 @@ import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angula
 import { CreateLeaveRequestDto } from '../../models/leave-request';
 import { LeaveRequestService } from '../../core/services/leave-request.service';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-request-leave',
@@ -13,7 +14,7 @@ import { Router } from '@angular/router';
 export class RequestLeaveComponent {
   minDate: string;
   errors: string[] | null = null;
-  constructor(private leaveRequestService: LeaveRequestService, private router: Router){
+  constructor(private leaveRequestService: LeaveRequestService, private router: Router, private toast: ToastrService){
     this.minDate = new Date().toISOString().split('T')[0];
   }
 
@@ -44,16 +45,22 @@ export class RequestLeaveComponent {
 
     this.leaveRequestService.createLeaveRequest(requestDto).subscribe({
       next: () => {
-        this.router.navigate(['/app/dashboard'])
+        this.toast.success("Successfully created the request!", 'Success');
+        this.router.navigate(['/app/dashboard']);
       },
 
       error: (err) => {
         this.errors = [];
           if(err.status === 0){
+            this.toast.error("Failed to connect to the server!", 'Network Error');
             this.errors.push('Failed to connect to the server!');
             return;
           } 
+          this.toast.error("Couldn't create the request!", 'Error');
 
+          if(!err.error){
+            return;
+          }
           this.errors = err.error;
       }
     })

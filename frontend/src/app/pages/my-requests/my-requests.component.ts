@@ -3,6 +3,7 @@ import { LeaveRequestService } from '../../core/services/leave-request.service';
 import { LeaveRequestDto } from '../../models/leave-request';
 import { RouterLink } from "@angular/router";
 import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-modal.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-my-requests',
@@ -17,7 +18,7 @@ export class MyRequestsComponent implements OnInit{
   isConfirmOpen = false;
   idToCancel: number | null = null;
 
-  constructor(private leaveRequestService: LeaveRequestService) {}
+  constructor(private leaveRequestService: LeaveRequestService, private toast: ToastrService) {}
 
   ngOnInit(): void {
     this.leaveRequestService.getMyLeaveRequests().subscribe({
@@ -40,6 +41,10 @@ export class MyRequestsComponent implements OnInit{
         }
         this.idToCancel = null;
         this.isConfirmOpen = false;
+        this.toast.success("Successfully cancelled the request!", 'Success');
+      },
+      error: () => {
+        this.toast.error("An unexpected error!", 'Error')
       }
     })
   }

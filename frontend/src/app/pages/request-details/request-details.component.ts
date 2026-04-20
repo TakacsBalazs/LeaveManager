@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-modal.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-request-details',
@@ -19,8 +20,9 @@ export class RequestDetailsComponent implements OnInit{
   id!: number;
   isManagerMode = false;
   isCancelConfirmOpen = false;
+  errors: string[] | null = null;
 
-  constructor(private leaveRequestService: LeaveRequestService, private route: ActivatedRoute, private router: Router, private location: Location, private authService: AuthService) {}
+  constructor(private leaveRequestService: LeaveRequestService, private route: ActivatedRoute, private router: Router, private location: Location, private authService: AuthService, private toast: ToastrService) {}
 
   ngOnInit(): void{
     const idParam = this.route.snapshot.paramMap.get('id');
@@ -50,6 +52,10 @@ export class RequestDetailsComponent implements OnInit{
       next: () => {
         this.data!.status = 'Cancelled';
         this.isCancelConfirmOpen = false;
+        this.toast.success("Successfully cancelled the request!", 'Success');
+      },
+      error: () => {
+        this.toast.error("An unexpected error!", 'Error')
       }
     })
   }
@@ -62,6 +68,21 @@ export class RequestDetailsComponent implements OnInit{
     this.leaveRequestService.rejectRequest(this.id).subscribe({
       next: () => {
         this.data!.status = 'Rejected';
+        this.toast.success("Successfully rejected the request!", 'Success');
+      },
+      error: (err) => {
+        this.errors = [];
+        if(err.status === 0){
+          this.toast.error("Failed to connect to the server!", 'Network Error');
+          this.errors.push('Failed to connect to the server!');
+          return;
+        } 
+        this.toast.error("Couldn't reject the request!", 'Error');
+
+        if(!err.error){
+          return;
+        }
+        this.errors = err.error;
       }
     })
   }
@@ -70,6 +91,21 @@ export class RequestDetailsComponent implements OnInit{
     this.leaveRequestService.approveRequest(this.id).subscribe({
       next: () => {
         this.data!.status = 'Approved';
+        this.toast.success("Successfully approved the request!", 'Success');
+      },
+      error: (err) => {
+        this.errors = [];
+        if(err.status === 0){
+          this.toast.error("Failed to connect to the server!", 'Network Error');
+          this.errors.push('Failed to connect to the server!');
+          return;
+        } 
+        this.toast.error("Couldn't approve the request!", 'Error');
+
+        if(!err.error){
+          return;
+        }
+        this.errors = err.error;
       }
     })
   }

@@ -9,7 +9,7 @@
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     } @else {
-      <div class="mt-6 grid grid-cols-3 gap-4">
+      <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         @for (balance of data?.balances; track $index) {
           <div class="bg-blue-50 p-4 rounded-md border border-blue-100">
             <span class="block text-lg text-blue-500 font-semibold">All days ({{balance.type}})</span>

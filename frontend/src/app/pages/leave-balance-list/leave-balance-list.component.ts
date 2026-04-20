@@ -6,6 +6,7 @@ import { UserService } from '../../core/services/user.service';
 import { UserDropdown } from '../../models/user';
 import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-modal.component';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-leave-balance-list',
@@ -29,7 +30,7 @@ export class LeaveBalanceListComponent implements OnInit{
     type: new FormControl(0)
   })
 
-  constructor(private leaveBalanceService: LeaveBalanceService, private userService: UserService) {}
+  constructor(private leaveBalanceService: LeaveBalanceService, private userService: UserService, private toast: ToastrService) {}
 
   ngOnInit(): void {
     this.leaveBalanceService.getAllLeaveBalances(null).subscribe({

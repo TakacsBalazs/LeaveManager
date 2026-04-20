@@ -4,6 +4,8 @@ import { UserService } from '../../core/services/user.service';
 import { UserFormComponent } from '../../components/user-form/user-form.component';
 import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-modal.component';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+
 @Component({
   selector: 'app-user-list',
   imports: [UserFormComponent, ConfirmModalComponent, ReactiveFormsModule],
@@ -26,7 +28,7 @@ export class UserListComponent implements OnInit{
     roles: new FormControl([])
   })
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private toast: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -72,9 +74,11 @@ export class UserListComponent implements OnInit{
           const userInd = this.data.findIndex(x => x.id == this.selectedUser!.id);
           this.data[userInd] = resp;
           this.closeModal();
+          this.toast.success("Successfully edited the user!", 'Success');
         },
         error: (err) => {
           this.errors = err.error
+          this.toast.error("Couldn't edit the user!", 'Error');
         }
       })
 
@@ -90,9 +94,11 @@ export class UserListComponent implements OnInit{
         next: (resp) => {
           this.data.push(resp);
           this.closeModal();
+          this.toast.success("Successfully created the user!", 'Success');
         },
         error: (err) => {
           this.errors = err.error;
+          this.toast.error("Couldn't create the user!", 'Error');
         }
       })
     }
@@ -109,6 +115,10 @@ export class UserListComponent implements OnInit{
         this.data.splice(userInd, 1);
         this.idToDelete = null;
         this.isConfirmOpen = false;
+        this.toast.success("Successfully deleted the user!", 'Success');
+      },
+      error: () => {
+        this.toast.error("Couldn't delete the user!", 'Error');
       }
     })
   }

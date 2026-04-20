@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LeaveRequestDto } from '../../models/leave-request';
 import { LeaveRequestService } from '../../core/services/leave-request.service'; 
 import { RouterLink } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-manager-dashboard',
@@ -14,7 +15,7 @@ export class ManagerDashboardComponent implements OnInit{
   data: LeaveRequestDto[] = [];
   isLoading = true;
 
-  constructor(private leaveRequestService: LeaveRequestService){}
+  constructor(private leaveRequestService: LeaveRequestService, private toast: ToastrService){}
 
   ngOnInit(): void {
     this.leaveRequestService.getAllPendingRequests().subscribe({
@@ -32,6 +33,10 @@ export class ManagerDashboardComponent implements OnInit{
         if(rejectedRequestInd !== -1){
           this.data.splice(rejectedRequestInd, 1);
         }
+        this.toast.success("Successfully rejected the reqeust!", "Success");
+      },
+      error: () => {
+        this.toast.error("Couldn't reject the request!", 'Error');
       }
     })
   }
@@ -43,6 +48,10 @@ export class ManagerDashboardComponent implements OnInit{
         if(approvedRequestInd !== -1){
           this.data.splice(approvedRequestInd, 1);
         }
+        this.toast.success("Successfully approved the reqeust!", "Success")
+      },
+      error: () => {
+        this.toast.error("Couldn't approve the request!", 'Error');
       }
     })
   }
