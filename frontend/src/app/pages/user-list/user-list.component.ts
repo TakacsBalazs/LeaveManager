@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { CreateUserRequest, UpdateUserRequest, UserDto } from '../../models/user';
+import { CreateUserRequest, FilterUsersRequest, Role, UpdateUserRequest, UserDto } from '../../models/user';
 import { UserService } from '../../core/services/user.service';
 import { UserFormComponent } from '../../components/user-form/user-form.component';
 import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-modal.component';
-
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'app-user-list',
-  imports: [UserFormComponent, ConfirmModalComponent],
+  imports: [UserFormComponent, ConfirmModalComponent, ReactiveFormsModule],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.scss'
 })
@@ -18,16 +18,28 @@ export class UserListComponent implements OnInit{
   errors: string[] = [];
   isConfirmOpen = false;
   idToDelete: string | null = null;
+  roles: Role[] = [];
+
+  filterForm: FormGroup = new FormGroup({
+    fullname: new FormControl(''),
+    email: new FormControl(''),
+    roles: new FormControl([])
+  })
 
   constructor(private userService: UserService) {
-    
   }
 
   ngOnInit(): void {
-    this.userService.getUsers().subscribe({
+    this.userService.getUsers(null).subscribe({
       next: (resp) => {
         this.data = resp;
         this.isLoading = false;
+      }
+    })
+
+    this.userService.getRoles().subscribe({
+      next: (resp) => {
+        this.roles = resp;
       }
     })
   }
@@ -80,7 +92,7 @@ export class UserListComponent implements OnInit{
           this.closeModal();
         },
         error: (err) => {
-          this.errors = err.error
+          this.errors = err.error;
         }
       })
     }
@@ -104,5 +116,39 @@ export class UserListComponent implements OnInit{
   openConfirm(id: string){
     this.idToDelete = id;
     this.isConfirmOpen = true;
+  }
+
+  onSubmitQuery(){
+    const filter: FilterUsersRequest = {
+      fullname: this.filterForm.value.fullname,
+      email: this.filterForm.value.email,
+      roles: this.filterForm.value.roles
+    }
+    this.isLoading = true
+    this.userService.getUsers(filter).subscribe({
+      next: (resp) => {
+        this.data = resp;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+      }
+    })
+  }
+
+  onRoleChange(roleId: string, event: Event) {
+    const checkbox = event.target as HTMLInputElement;
+    const rolesArray = this.filterForm.get('roles')?.value as string[] || [];
+  
+    if (checkbox.checked) {
+      this.filterForm.patchValue({roles: [...rolesArray, roleId]});
+    } else {
+      this.filterForm.patchValue({roles: rolesArray.filter(id => id !== roleId)});
+    }
+  }
+
+  hasRole(roleId: string) {
+    const currentRoles = this.filterForm.get('roles')?.value;
+    return currentRoles.includes(roleId); 
   }
 }
