@@ -27,3 +27,9 @@ export interface CreateLeaveBalanceRequest{
 export interface UpdateLeaveBalanceRequest {
     totalDays: number
 }
+
+export interface FilterLeaveBalance {
+    userFullname?: string | null,
+    year?: number | null,
+    type?: string | null
+}
