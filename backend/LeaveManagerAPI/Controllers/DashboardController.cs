@@ -10,8 +10,8 @@ namespace LeaveManagerAPI.Controllers
     [ApiController]
     public class DashboardController : ControllerBase
     {
-        private readonly ILeaveService leaveService;
-        public DashboardController(ILeaveService leaveService)
+        private readonly ILeaveRequestService leaveService;
+        public DashboardController(ILeaveRequestService leaveService)
         {
             this.leaveService = leaveService;
         }

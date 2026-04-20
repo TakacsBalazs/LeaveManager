@@ -41,8 +41,9 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 builder.Services.AddScoped<DatabaseSeeder>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ILeaveService, LeaveService>();
+builder.Services.AddScoped<ILeaveRequestService, LeaveRequestService>();
 builder.Services.AddScoped<IUserService, UserService>();   
+builder.Services.AddScoped<ILeaveBalanceService, LeaveBalanceService>();
 
 builder.Services.AddAuthentication(options =>
 {

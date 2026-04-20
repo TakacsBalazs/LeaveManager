@@ -12,18 +12,18 @@ namespace LeaveManagerAPI.Controllers
     [ApiController]
     public class LeaveBalanceController : ControllerBase
     {
-        private ILeaveService leaveService;
+        private ILeaveBalanceService leaveBalanceService;
 
-        public LeaveBalanceController(ILeaveService leaveService)
+        public LeaveBalanceController(ILeaveBalanceService leaveBalanceService)
         {
-            this.leaveService = leaveService;
+            this.leaveBalanceService = leaveBalanceService;
         }
 
         [Authorize(Roles = UserRoles.Admin)]
         [HttpGet]
         public async Task<IActionResult> GetAllLeaveBalances()
         {
-            var result = await leaveService.GetAllLeaveBalancesAsync();
+            var result = await leaveBalanceService.GetAllLeaveBalancesAsync();
             if(!result.IsSuccess)
             {
                 return BadRequest(result.Errors);
@@ -35,7 +35,7 @@ namespace LeaveManagerAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateLeaveBalance([FromBody] CreateLeaveBalanceRequest request)
         {
-            var result = await leaveService.CreateLeaveBalanceAsync(request);
+            var result = await leaveBalanceService.CreateLeaveBalanceAsync(request);
             if(!result.IsSuccess)
             {
                 return BadRequest(result.Errors);
@@ -47,7 +47,7 @@ namespace LeaveManagerAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateLeaveBalance([FromBody] UpdateLeaveBalanceRequest request, int id)
         {
-            var result = await leaveService.UpdateLeaveBalanceAsync(request, id);
+            var result = await leaveBalanceService.UpdateLeaveBalanceAsync(request, id);
             if (!result.IsSuccess)
             {
                 return BadRequest(result.Errors);
@@ -59,7 +59,7 @@ namespace LeaveManagerAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLeaveBalance(int id)
         {
-            var result = await leaveService.DeleteLeaveBalanceAsync(id);
+            var result = await leaveBalanceService.DeleteLeaveBalanceAsync(id);
             if (!result.IsSuccess)
             {
                 return BadRequest(result.Errors);

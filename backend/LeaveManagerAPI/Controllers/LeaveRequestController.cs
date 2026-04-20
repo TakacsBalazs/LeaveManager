@@ -13,11 +13,11 @@ namespace LeaveManagerAPI.Controllers
     [ApiController]
     public class LeaveRequestController : ControllerBase
     {
-        private readonly ILeaveService leaveService;
+        private readonly ILeaveRequestService leaveRequestService;
 
-        public LeaveRequestController(ILeaveService leaveService)
+        public LeaveRequestController(ILeaveRequestService leaveRequestService)
         {
-            this.leaveService = leaveService;
+            this.leaveRequestService = leaveRequestService;
         }
 
         [Authorize]
@@ -25,7 +25,7 @@ namespace LeaveManagerAPI.Controllers
         public async Task<IActionResult> CreateLeaveReuqest([FromBody] CreateLeaveRequest request)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            var result = await leaveService.CreateLeaveRequestAsnyc(request, userId);
+            var result = await leaveRequestService.CreateLeaveRequestAsnyc(request, userId);
             if(!result.IsSuccess)
             {
                 return BadRequest(result.Errors);
@@ -38,7 +38,7 @@ namespace LeaveManagerAPI.Controllers
         public async Task<IActionResult> GetMyRequests()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            var result = await leaveService.GetMyRequestsAsync(userId);
+            var result = await leaveRequestService.GetMyRequestsAsync(userId);
             if (!result.IsSuccess)
             {
                 return BadRequest(result.Errors);
@@ -51,7 +51,7 @@ namespace LeaveManagerAPI.Controllers
         public async Task<IActionResult> CancelRequest(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            var result = await leaveService.CancelRequestAsync(id, userId);
+            var result = await leaveRequestService.CancelRequestAsync(id, userId);
             if (!result.IsSuccess)
             {
                 return BadRequest(result.Errors);
@@ -65,7 +65,7 @@ namespace LeaveManagerAPI.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             bool hasPrivileges = User.IsInRole(UserRoles.Admin);
-            var result = await leaveService.GetRequestByIdAsync(id, userId, hasPrivileges);
+            var result = await leaveRequestService.GetRequestByIdAsync(id, userId, hasPrivileges);
             if (!result.IsSuccess)
             {
                 return BadRequest(result.Errors);
@@ -78,7 +78,7 @@ namespace LeaveManagerAPI.Controllers
         public async Task<IActionResult> ApproveRequest(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            var result = await leaveService.ApproveRequestAsync(id, userId);
+            var result = await leaveRequestService.ApproveRequestAsync(id, userId);
             if (!result.IsSuccess)
             {
                 return BadRequest(result.Errors);
@@ -92,7 +92,7 @@ namespace LeaveManagerAPI.Controllers
         public async Task<IActionResult> RejectRequest(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            var result = await leaveService.RejectRequestAsync(id, userId);
+            var result = await leaveRequestService.RejectRequestAsync(id, userId);
             if (!result.IsSuccess)
             {
                 return BadRequest(result.Errors);
@@ -105,7 +105,7 @@ namespace LeaveManagerAPI.Controllers
         [HttpGet("allpendingrequests")]
         public async Task<IActionResult> GetAllPendingRequests()
         {
-            var result = await leaveService.GetAllPendingRequestsAsync();
+            var result = await leaveRequestService.GetAllPendingRequestsAsync();
             if (!result.IsSuccess)
             {
                 return BadRequest(result.Errors);

@@ -4,7 +4,7 @@ using LeaveManagerAPI.Models.Responses;
 
 namespace LeaveManagerAPI.Services
 {
-    public interface ILeaveService
+    public interface ILeaveRequestService
     {
         Task<Result<DashboardResponse>> GetDashboardAsync(string userId);
 
@@ -21,13 +21,5 @@ namespace LeaveManagerAPI.Services
         Task<Result> RejectRequestAsync(int id, string userId);
 
         Task<Result<IEnumerable<LeaveRequestResponse>>> GetAllPendingRequestsAsync();
-
-        Task<Result<IEnumerable<LeaveBalanceResponse>>> GetAllLeaveBalancesAsync();
-
-        Task<Result<LeaveBalanceResponse>> CreateLeaveBalanceAsync(CreateLeaveBalanceRequest request);
-        
-        Task<Result<LeaveBalanceResponse>> UpdateLeaveBalanceAsync(UpdateLeaveBalanceRequest request, int id);
-
-        Task<Result> DeleteLeaveBalanceAsync(int id);
     }
 }
