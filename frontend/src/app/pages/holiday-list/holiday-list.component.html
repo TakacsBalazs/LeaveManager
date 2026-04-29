@@ -1,0 +1,54 @@
+<div class="bg-white shadow rounded-lg p-6 border border-gray-200">
+  
+    <div class="flex justify-between items-center">
+  
+        <h1 class="text-2xl font-bold text-gray-800">Holidays</h1>
+      
+        <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition text-base">
+          + Create Holiday
+        </button>
+      
+      </div>
+    <p class="text-gray-600 mb-6">Here you can see all holidays and create or delete.</p>
+  
+    @if(isLoading) {
+      <div class="flex justify-center items-center py-10">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    } @else {
+      @if(data.length === 0) {
+        <div class="text-center py-10 bg-gray-50 rounded-lg border border-gray-100">
+          <p class="text-gray-500 font-medium">There are no holidays.</p>
+        </div>
+      } @else {
+        <div class="overflow-y-auto h-[450px]">
+          <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg"> 
+            <thead class="bg-gray-50 sticky top-[-1px] z-10">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Holiday</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              @for (holiday of data; track holiday.id) {
+                <tr class="hover:bg-gray-50 transition-colors">
+                  
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="text-sm font-medium text-gray-900">{{ holiday.name }}</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="text-sm font-medium text-gray-900">{{ holiday.date }}</span>
+                  </td>
+
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1.5 transition rounded-md">Delete</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    }
+</div>
