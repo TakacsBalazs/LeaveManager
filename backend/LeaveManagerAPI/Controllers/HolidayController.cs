@@ -41,5 +41,18 @@ namespace LeaveManagerAPI.Controllers
             }
             return Ok(result.Data);
         }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteHoliday(int id)
+        {
+            var result = await holidayService.DeleteHolidayAsync(id);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok(new { message = "Successful delete the holiday!" });
+        }
     }
 }
