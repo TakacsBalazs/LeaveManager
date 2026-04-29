@@ -4,7 +4,7 @@
   
         <h1 class="text-2xl font-bold text-gray-800">Holidays</h1>
       
-        <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition text-base">
+        <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition text-base" (click)="openModal()">
           + Create Holiday
         </button>
       
@@ -52,3 +52,7 @@
       }
     }
 </div>
+
+@if(isModalOpen){
+    <app-holiday-form (saveForm)="handleCreateHoliday($event)" (closeForm)="closeModal()" [errors]="errors"/>
+}
