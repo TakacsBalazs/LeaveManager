@@ -23,7 +23,7 @@ export class UserFormComponent implements OnInit{
     this.userForm = new FormGroup({
       fullname: new FormControl(this.user?.fullname || '', [Validators.required]),
       email: new FormControl(this.user?.email || '', [Validators.required, Validators.email]),
-      password: new FormControl('', this.user ? [] : [Validators.required, Validators.minLength(6)]),
+      password: new FormControl('', this.user ? [] : [Validators.required, Validators.minLength(6), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).*$/)]),
       roles: new FormControl(this.user?.roles || [], [Validators.required])
     })
   }
@@ -42,13 +42,17 @@ export class UserFormComponent implements OnInit{
 
   onRoleChange(role: string, event: Event) {
     const isChecked = (event.target as HTMLInputElement).checked;
+
+    const rolesControl = this.userForm.get('roles');
     
-    const currentRoles = this.userForm.get('roles')?.value as string[];
+    const currentRoles = rolesControl?.value as string[];
   
     if (isChecked) {
-      this.userForm.get('roles')?.setValue([...currentRoles, role]);
+      rolesControl?.setValue([...currentRoles, role]);
     } else {
-      this.userForm.get('roles')?.setValue(currentRoles.filter(r => r !== role));
+      rolesControl?.setValue(currentRoles.filter(r => r !== role));
     }
+
+    rolesControl?.markAsTouched();
   }
 }
