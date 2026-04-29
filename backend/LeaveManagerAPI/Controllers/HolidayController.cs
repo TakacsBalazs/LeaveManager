@@ -1,4 +1,6 @@
-﻿using LeaveManagerAPI.Services;
+﻿using LeaveManagerAPI.Constants;
+using LeaveManagerAPI.Models.Requests;
+using LeaveManagerAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,6 +27,18 @@ namespace LeaveManagerAPI.Controllers
                 return BadRequest(result.Errors);
             }
 
+            return Ok(result.Data);
+        }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpPost]
+        public async Task<IActionResult> CreateHoliday([FromBody] CreateHolidayRequest request)
+        {
+            var result = await holidayService.CreateHolidayAsync(request);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Errors);
+            }
             return Ok(result.Data);
         }
     }
