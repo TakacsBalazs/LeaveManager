@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ChangePasswordRequest } from '../../models/auth';
 
 @Component({
@@ -18,9 +18,20 @@ export class ChangePasswordFormComponent implements OnInit{
   ngOnInit(): void {
     this.changePasswordForm = new FormGroup({
       oldPassword: new FormControl('', [Validators.required]),
-      newPassword: new FormControl('', [Validators.required, Validators.minLength(6)]),
-      confirmNewPassword: new FormControl('', [Validators.required, Validators.minLength(6)])
-    })
+      newPassword: new FormControl('', [Validators.required, Validators.minLength(6), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).*$/)]),
+      confirmNewPassword: new FormControl('', [Validators.required, Validators.minLength(6), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).*$/)])
+    }, { validators: this.passwordConfirmationValidator })
+  }
+
+  passwordConfirmationValidator(group: AbstractControl){
+    const newPassword = group.get('newPassword')?.value;
+    const confirmNewPassword = group.get('confirmNewPassword')?.value;
+
+    if(newPassword !== confirmNewPassword) {
+      return { passwordConfirmationInvalid: true };
+    }
+    
+    return null;
   }
 
   onSubmit(){
