@@ -11,6 +11,7 @@ namespace LeaveManagerAPI.Validators
             RuleFor(x => x.UsedDays).GreaterThanOrEqualTo(0).LessThanOrEqualTo(x => x.TotalDays);
             RuleFor(x => x.Year).NotEmpty().GreaterThanOrEqualTo(DateTime.UtcNow.Year);
             RuleFor(x => x.UserId).NotEmpty();
+            RuleFor(x => x.Type).IsInEnum();
         }
     }
 }
