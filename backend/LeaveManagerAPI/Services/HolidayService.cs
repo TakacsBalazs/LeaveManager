@@ -62,5 +62,19 @@ namespace LeaveManagerAPI.Services
             };
             return Result<HolidayResponse>.Success(response);
         }
+
+        public async Task<Result> DeleteHolidayAsync(int id)
+        {
+            var holiday = await context.Holidays.FindAsync(id);
+            if(holiday == null)
+            {
+                return Result.Failure("Invalid Id!");
+            }
+
+            context.Holidays.Remove(holiday);
+            await context.SaveChangesAsync();
+
+            return Result.Success();
+        }
     }
 }
