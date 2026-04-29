@@ -10,6 +10,7 @@ import { ManagerDashboardComponent } from './pages/manager-dashboard/manager-das
 import { adminGuard } from './core/guards/admin.guard';
 import { UserListComponent } from './pages/user-list/user-list.component';
 import { LeaveBalanceListComponent } from './pages/leave-balance-list/leave-balance-list.component';
+import { HolidayListComponent } from './pages/holiday-list/holiday-list.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -22,6 +23,7 @@ export const routes: Routes = [
         { path: 'requests/:id', component: RequestDetailsComponent},
         { path: 'manager-dashboard', component: ManagerDashboardComponent, canActivate: [adminGuard]},
         { path: 'user-list', component: UserListComponent, canActivate: [adminGuard]},
-        { path: 'leave-balance-list', component: LeaveBalanceListComponent, canActivate: [adminGuard]}
+        { path: 'leave-balance-list', component: LeaveBalanceListComponent, canActivate: [adminGuard]},
+        { path: 'holiday-list', component: HolidayListComponent, canActivate: [adminGuard]}
     ]}
 ];
