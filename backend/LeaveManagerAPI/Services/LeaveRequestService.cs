@@ -60,24 +60,29 @@ namespace LeaveManagerAPI.Services
 
             if (hasOverlap)
             {
-                return Result.Failure("You already have an leave request for this period!");
+                return Result.Failure("You already have a leave request for this period!");
             }
 
             DateOnly current = request.StartDate;
 
             int workingDays = 0;
 
+            var holidays = await context.Holidays.Where(x => request.StartDate <= x.Date && request.EndDate >= x.Date).Select(x => x.Date).ToListAsync();
+
             while (current <= request.EndDate)
             {
                 if (current.DayOfWeek != DayOfWeek.Saturday && current.DayOfWeek != DayOfWeek.Sunday)
                 {
-                    workingDays++;
+                    if(!holidays.Contains(current))
+                    {
+                        workingDays++;
+                    }
                 }
                 current = current.AddDays(1);
             }
 
             if(workingDays == 0) {
-                return Result.Failure("This does not containt any working days.");
+                return Result.Failure("This does not contain any working days.");
             }
 
             if(workingDays > balance.RemainingDays) {
