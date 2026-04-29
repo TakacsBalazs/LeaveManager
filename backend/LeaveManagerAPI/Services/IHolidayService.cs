@@ -9,5 +9,7 @@ namespace LeaveManagerAPI.Services
         Task<Result<IEnumerable<HolidayResponse>>> GetAllHolidaysAsync();
 
         Task<Result<HolidayResponse>> CreateHolidayAsync(CreateHolidayRequest request);
+
+        Task<Result> DeleteHolidayAsync(int id);
     }
 }
