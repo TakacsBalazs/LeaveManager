@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateLeaveBalanceRequest, LeaveBalanceResponse } from '../../models/leave-balance';
 import { UserDropdown } from '../../models/user';
 
@@ -19,13 +19,25 @@ export class LeaveBalanceFormComponent implements OnInit{
   leaveBalanceForm!: FormGroup;
 
   ngOnInit(): void {
+    const minYear = new Date().getFullYear();
     this.leaveBalanceForm = new FormGroup({
       userId: new FormControl('', this.leaveBalance ? [] : [Validators.required]),
-      year: new FormControl('', this.leaveBalance ? [] : [Validators.required]),
+      year: new FormControl('', this.leaveBalance ? [] : [Validators.required, Validators.min(minYear)]),
       type: new FormControl(0, this.leaveBalance ? [] : [Validators.required]),
-      totalDays: new FormControl(this.leaveBalance?.totalDays || '', this.leaveBalance ? [] : [Validators.required]),
-      usedDays: new FormControl('', this.leaveBalance ? [] : [Validators.required])
-    });
+      totalDays: new FormControl(this.leaveBalance?.totalDays || '', [Validators.required, Validators.min(0)]),
+      usedDays: new FormControl(this.leaveBalance?.usedDays || '', this.leaveBalance ? [] : [Validators.required, Validators.min(0)])
+    }, { validators: this.daysRangeValidator });
+  }
+
+  daysRangeValidator(group: AbstractControl){
+    const totalDays = group.get('totalDays')?.value;
+    const usedDays = group.get('usedDays')?.value;
+
+    if(usedDays > totalDays){
+      return { daysRangeInvalid: true };
+    }
+
+    return null;
   }
 
   onSubmit(){
