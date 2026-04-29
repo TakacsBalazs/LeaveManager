@@ -16,6 +16,8 @@ export class HolidayListComponent implements OnInit{
   isLoading = true;
   isModalOpen = false;
   errors: string[] = [];
+  isConfirmOpen = false;
+  idToDelete: number | null = null;
 
   constructor(private holidayService: HolidayService, private toast: ToastrService){}
 
@@ -52,5 +54,29 @@ export class HolidayListComponent implements OnInit{
         this.toast.error("Couldn't create the holiday!", 'Error');
       }
     });
+  }
+
+  openConfirm(id: number){
+    this.idToDelete = id;
+    this.isConfirmOpen = true;
+  }
+
+  onDelete(){
+    if(!this.idToDelete){
+      return;
+    }
+
+    this.holidayService.deleteHoliday(this.idToDelete).subscribe({
+      next: () => {
+        const holidayInd = this.data.findIndex(x => x.id == this.idToDelete);
+        this.data.splice(holidayInd, 1);
+        this.isConfirmOpen = false;
+        this.idToDelete = null;
+        this.toast.success("Successfully deleted the holiday!", 'Success');
+      },
+      error: () => {
+        this.toast.error("Couldn't delete the holiday!", 'Error');
+      }
+    })
   }
 }
