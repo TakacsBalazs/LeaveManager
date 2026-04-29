@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { CreateLeaveRequestDto } from '../../models/leave-request';
 import { LeaveRequestService } from '../../core/services/leave-request.service';
 import { Router } from '@angular/router';
@@ -23,18 +23,20 @@ export class RequestLeaveComponent {
     startDate: new FormControl('', Validators.required),
     endDate: new FormControl('', Validators.required),
     reason: new FormControl('')
-  })
+  }, { validators: this.dateRangeValidator })
+
+  dateRangeValidator(group: AbstractControl) {
+    const start = group.get('startDate')?.value;
+    const end = group.get('endDate')?.value;
+
+    if (start && end && new Date(start) > new Date(end)) {
+      return { dateRangeInvalid: true }; 
+    }
+    return null;
+  }
 
   onSubmit(){
     const formValue = this.requestForm.value;
-    
-    this.errors = [];
-    const startDate = new Date(formValue.startDate!);
-    const endDate = new Date(formValue.endDate!);
-    if(endDate < startDate){
-      this.errors.push("End date cannot be before the start date.");
-      return;
-    }
 
     const requestDto: CreateLeaveRequestDto = {
       type: Number(formValue.type),
