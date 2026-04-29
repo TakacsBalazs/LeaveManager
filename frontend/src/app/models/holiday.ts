@@ -3,3 +3,8 @@ export interface HolidayResponse {
     name: string,
     date: string
 }
+
+export interface CreateHolidayRequest {
+    name: string,
+    date: string
+}
