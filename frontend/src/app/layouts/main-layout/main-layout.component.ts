@@ -99,4 +99,12 @@ export class MainLayoutComponent implements OnInit{
     this.isAdminDropdownOpen = false;
     this.isProfileDropdownOpen = false;
   }
+
+  onDeleteNotification(id: number){
+    this.notificationService.deleteNotification(id).subscribe({
+      next: () => {
+        this.notifications.update(current => current.filter(x => x.id !== id))
+      }
+    })
+  }
 }
