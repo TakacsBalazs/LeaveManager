@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, OnInit, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ChangePasswordFormComponent } from "../../components/change-password-form/change-password-form.component";
 import { ChangePasswordRequest } from '../../models/auth';
 import { ToastrService } from 'ngx-toastr';
+import { NotificationResponse } from '../../models/notification';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -15,15 +17,27 @@ export class MainLayoutComponent implements OnInit{
   isAdmin = false;
   isPasswordModalOpen = false;
   errors: string[] = [];
+  notifications = signal<NotificationResponse[]>([]);
 
   isAdminDropdownOpen = false;
   isProfileDropdownOpen = false;
   isMainMenuDropdownOpen = false;
   isMobileMenuOpen = false;
-  constructor(private authService: AuthService, private router: Router, private toast: ToastrService) {}
+  isNotificationDropdownOpen = false;
+
+  unreadNotificationsCount = computed(() => {
+    return this.notifications().filter(x => !x.isRead).length;
+  });
+
+  constructor(private authService: AuthService, private router: Router, private toast: ToastrService, private notificationService: NotificationService) {}
 
   ngOnInit(): void {
     this.isAdmin = this.authService.isAdmin();
+    this.notificationService.getUserAllNotification().subscribe({
+      next: (resp) => {
+        this.notifications.set(resp);
+      }
+    });
   }
 
   logout(){
@@ -58,21 +72,31 @@ export class MainLayoutComponent implements OnInit{
     this.isMainMenuDropdownOpen = !this.isMainMenuDropdownOpen;
     this.isAdminDropdownOpen = false;
     this.isProfileDropdownOpen = false;
+    this.isNotificationDropdownOpen = false;
   }
 
   toggleAdminDropdown() {
     this.isAdminDropdownOpen = !this.isAdminDropdownOpen;
     this.isProfileDropdownOpen = false; 
     this.isMainMenuDropdownOpen = false;
+    this.isNotificationDropdownOpen = false;
   }
 
   toggleProfileDropdown() {
     this.isProfileDropdownOpen = !this.isProfileDropdownOpen;
     this.isMainMenuDropdownOpen = false;
     this.isAdminDropdownOpen = false;
+    this.isNotificationDropdownOpen = false;
   }
 
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  toggleNotificationDropdown(){
+    this.isNotificationDropdownOpen = !this.isNotificationDropdownOpen;
+    this.isMainMenuDropdownOpen = false;
+    this.isAdminDropdownOpen = false;
+    this.isProfileDropdownOpen = false;
   }
 }

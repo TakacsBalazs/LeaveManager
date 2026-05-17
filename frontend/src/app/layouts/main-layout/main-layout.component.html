@@ -48,6 +48,16 @@
   
         <div class="flex items-center gap-4">
           <div class="hidden md:flex relative">
+            <button (click)="toggleNotificationDropdown()" class="flex items-center text-blue-100 hover:text-white font-medium focus:outline-none transition mr-5">
+              <span>Notifications</span>
+              @if(unreadNotificationsCount() > 0){
+                <span class="ml-1 w-[23px] h-[23px] bg-red-600 rounded-full">{{ unreadNotificationsCount() > 9 ? '9+' : unreadNotificationsCount() }}</span>
+              }
+              <svg class="ml-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
             <button (click)="toggleProfileDropdown()" class="flex items-center text-blue-100 hover:text-white font-medium focus:outline-none transition">
               <span>My Profile</span>
               <svg class="ml-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -95,11 +105,59 @@
           }
   
           <div class="text-blue-300 px-3 py-2 text-sm font-bold uppercase tracking-wider mt-4">Profile</div>
+          <button (click)="toggleNotificationDropdown()" class="text-white w-full text-left block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-500 ml-2">Notifications
+            @if(unreadNotificationsCount() > 0){
+              <span class="py-[1px] px-2 bg-red-600 rounded-full">{{ unreadNotificationsCount() > 9 ? '9+' : unreadNotificationsCount() }}</span>
+            }
+          </button>
           <button (click)="openPasswordModal(); isMobileMenuOpen = false" class="text-white w-full text-left block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-500 ml-2">Change Password</button>
           <button (click)="logout()" class="text-red-400 w-full text-left block px-3 py-2 rounded-md text-base font-medium hover:bg-red-600 hover:text-white ml-2">Logout</button>
         </div>
       </div>
     }
+
+    @if(isNotificationDropdownOpen){
+      <div class="fixed inset-0 z-[100] bg-white flex flex-col md:absolute md:inset-auto md:right-44 md:top-[60px] md:w-64 md:h-72 md:rounded-md md:shadow-lg md:py-1 md:ring-1 md:ring-black md:ring-opacity-5 md:z-50 md:block">
+  
+        <div class="flex items-center justify-between p-4 border-b border-gray-100 md:hidden shrink-0">
+          <h3 class="font-bold text-gray-800 text-lg">Notifications</h3>
+          
+          <button class="p-2 text-gray-400 hover:bg-gray-200 rounded-full transition-colors" (click)="toggleNotificationDropdown();">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      
+        <div class="flex-1 overflow-y-auto md:h-full">
+          @for (notification of notifications(); track notification.id) {
+            <div class="p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-200 transition duration-150 flex gap-3" [class.bg-blue-50]="!notification.isRead">
+      
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-gray-900 truncate">{{ notification.title }}</p>
+                <p class="text-sm text-gray-500 line-clamp-1 mt-0.5">{{ notification.message }}</p>
+                <p class="text-xs text-gray-400 mt-1">{{ notification.createdAt.replace('T', ' ').slice(0, 16) }}</p>
+              </div>
+      
+              <div class="flex-shrink-0 flex items-center gap-3">
+                <button class="text-red-600 hover:bg-red-200 p-1 rounded-md transition-colors"> 
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                  </svg>
+                </button>
+      
+                @if (!notification.isRead) {
+                  <span class="w-2.5 h-2.5 bg-blue-600 rounded-full"></span>
+                }
+              </div>
+            </div>
+          } @empty {
+            <div class="h-full flex items-center justify-center text-gray-500 text-sm py-16 md:py-0">There are no notifications.</div>
+          }
+        </div>
+      </div>
+    }
+
   </nav>
   
     <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
