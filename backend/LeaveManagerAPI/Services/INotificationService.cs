@@ -7,5 +7,7 @@ namespace LeaveManagerAPI.Services
     {
 
         Task<Result<IEnumerable<NotificationResponse>>> GetUserAllNotificationAsync(string userId);
+
+        Task<Result<NotificationResponse>> GetNotificationByIdAsync(int id, string userId);
     }
 }
