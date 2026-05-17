@@ -11,5 +11,7 @@ namespace LeaveManagerAPI.Services
         Task<Result<NotificationResponse>> GetNotificationByIdAsync(int id, string userId);
 
         Task<Result> DeleteNotificationAsync(int id, string userId);
+
+        Task SendNotificationAsync(string userId, string title, string message);
     }
 }
