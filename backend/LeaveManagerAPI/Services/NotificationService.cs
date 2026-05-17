@@ -106,5 +106,40 @@ namespace LeaveManagerAPI.Services
             };
             await hubContext.Clients.User(userId).ReceiveNotification(response);
         }
+
+        public async Task SendNotificationToAdminsAsync(string title, string message)
+        {
+            var adminRoleId = await context.Roles.Where(r => r.Name == UserRoles.Admin).Select(r => r.Id).FirstOrDefaultAsync();
+
+            var adminUsers = await context.UserRoles.Where(u => u.RoleId == adminRoleId).ToListAsync();
+            var notifications = new List<Notification>();
+            foreach (var adminUser in adminUsers)
+            {
+                var notification = new Notification
+                {
+                    UserId = adminUser.UserId,
+                    Title = title,
+                    Message = message
+                };
+
+                notifications.Add(notification);
+            }
+
+            context.Notifications.AddRange(notifications);
+            await context.SaveChangesAsync();
+
+            foreach (var notification in notifications)
+            {
+                var response = new NotificationResponse
+                {
+                    Id = notification.Id,
+                    Title = notification.Title,
+                    Message = notification.Message,
+                    IsRead = notification.IsRead,
+                    CreatedAt = notification.CreatedAt
+                };
+                await hubContext.Clients.User(notification.UserId).ReceiveNotification(response);
+            }
+        }
     }
 }
