@@ -17,6 +17,8 @@ namespace LeaveManagerAPI.Data
 
         public DbSet<Holiday> Holidays { get; set; }
 
+        public DbSet<Notification> Notifications { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -63,6 +65,17 @@ namespace LeaveManagerAPI.Data
                 entity.Property(x => x.Date).IsRequired();
 
                 entity.HasIndex(x => x.Date).IsUnique();
+            });
+
+            builder.Entity<Notification>(entity =>
+            {
+                entity.Property(x => x.UserId).IsRequired();
+                entity.Property(x => x.Title).IsRequired().HasMaxLength(100);
+                entity.Property(x => x.Message).IsRequired().HasMaxLength(1000);
+                entity.Property(x => x.IsRead).IsRequired();
+                entity.Property(x => x.CreatedAt).IsRequired();
+
+                entity.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
             });
         }
     }
