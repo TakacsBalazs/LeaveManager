@@ -1,5 +1,6 @@
 using FluentValidation;
 using LeaveManagerAPI.Data;
+using LeaveManagerAPI.Hubs;
 using LeaveManagerAPI.Models;
 using LeaveManagerAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -64,6 +65,21 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,
          ClockSkew = TimeSpan.Zero
     };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+            var path = context.HttpContext.Request.Path;
+
+            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/leave-hub"))
+            {
+                context.Token = accessToken;
+            }
+            return Task.CompletedTask;
+        }
+    };
 });
 
 builder.Services.AddCors(options =>
@@ -72,11 +88,14 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(builder.Configuration["AllowedOrigins"]!)
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -111,5 +130,7 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "Database seeder error!");
     }
 }
+
+app.MapHub<LeaveHub>("/leave-hub");
 
 app.Run();
