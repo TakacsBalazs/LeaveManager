@@ -1,0 +1,24 @@
+<div class="fixed inset-0 bg-gray-800 bg-opacity-60 overflow-y-auto h-full w-full flex items-center justify-center z-50">
+  
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
+        <div class="flex justify-between items-start mb-2">
+            <h2 class="text-2xl font-bold text-gray-800 pr-4">{{ notification?.title }}</h2>
+            
+            <button type="button" (click)="onClose()" 
+                    class="text-gray-400 hover:text-gray-700 transition focus:outline-none">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        
+        <p class="text-sm text-gray-400 mb-6 border-b border-gray-100 pb-4">{{ notification?.createdAt ? notification!.createdAt.replace('T', ' ').slice(0, 16) : '' }}</p>
+
+        <div class="text-gray-700 text-md leading-relaxed min-h-[4rem]">{{ notification?.message }}</div>
+
+        <div class="flex justify-end mt-8 pt-4 border-t border-gray-100">
+            <button type="button" (click)="onDelete()" 
+                    class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1.5 mr-4 transition rounded-md">Delete</button>
+          </div>
+    </div>
+</div>
