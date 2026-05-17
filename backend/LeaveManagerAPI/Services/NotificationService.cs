@@ -1,4 +1,5 @@
 ﻿using LeaveManagerAPI.Common;
+using LeaveManagerAPI.Constants;
 using LeaveManagerAPI.Data;
 using LeaveManagerAPI.Hubs;
 using LeaveManagerAPI.Models;
@@ -11,10 +12,12 @@ namespace LeaveManagerAPI.Services
     public class NotificationService : INotificationService
     {
         private readonly AppDbContext context;
+        private readonly IHubContext<LeaveHub, ILeaveClient> hubContext;
 
-        public NotificationService(AppDbContext context, IHubContext<LeaveHub)
+        public NotificationService(AppDbContext context, IHubContext<LeaveHub, ILeaveClient> hubContext)
         {
             this.context = context;
+            this.hubContext = hubContext;
         }
 
         public async Task<Result<IEnumerable<NotificationResponse>>> GetUserAllNotificationAsync(string userId)
@@ -101,6 +104,7 @@ namespace LeaveManagerAPI.Services
                 IsRead = notification.IsRead,
                 CreatedAt = notification.CreatedAt
             };
+            await hubContext.Clients.User(userId).ReceiveNotification(response);
         }
     }
 }
