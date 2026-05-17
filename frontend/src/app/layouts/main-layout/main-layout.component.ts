@@ -6,10 +6,11 @@ import { ChangePasswordRequest } from '../../models/auth';
 import { ToastrService } from 'ngx-toastr';
 import { NotificationResponse } from '../../models/notification';
 import { NotificationService } from '../../core/services/notification.service';
+import { NotificationModalComponent } from '../../components/notification-modal/notification-modal.component';
 
 @Component({
   selector: 'app-main-layout',
-  imports: [RouterModule, ChangePasswordFormComponent],
+  imports: [RouterModule, ChangePasswordFormComponent, NotificationModalComponent],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss'
 })
@@ -24,6 +25,9 @@ export class MainLayoutComponent implements OnInit{
   isMainMenuDropdownOpen = false;
   isMobileMenuOpen = false;
   isNotificationDropdownOpen = false;
+
+  isNotificationModalOpen = false;
+  selectedNotification: NotificationResponse | null = null;
 
   unreadNotificationsCount = computed(() => {
     return this.notifications().filter(x => !x.isRead).length;
@@ -98,6 +102,22 @@ export class MainLayoutComponent implements OnInit{
     this.isMainMenuDropdownOpen = false;
     this.isAdminDropdownOpen = false;
     this.isProfileDropdownOpen = false;
+  }
+
+  openNotificationModal(notification: NotificationResponse){
+    this.isNotificationModalOpen = true;
+    this.selectedNotification = notification;
+
+    this.notificationService.getNotification(notification.id).subscribe({
+      next: (resp) => {
+        this.notifications.update(current => current.map(x => x.id === resp.id ? resp : x));
+      }
+    })
+  }
+
+  closeNotificationModal(){
+    this.isNotificationModalOpen = false; 
+    this.selectedNotification = null;
   }
 
   onDeleteNotification(id: number){

@@ -131,7 +131,7 @@
       
         <div class="flex-1 overflow-y-auto md:h-full">
           @for (notification of notifications(); track notification.id) {
-            <div class="p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-200 transition duration-150 flex gap-3" [class.bg-blue-50]="!notification.isRead">
+            <div class="p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-200 transition duration-150 flex gap-3" [class.bg-blue-50]="!notification.isRead" (click)="openNotificationModal(notification)">
       
               <div class="flex-1 min-w-0">
                 <p class="text-sm font-semibold text-gray-900 truncate">{{ notification.title }}</p>
@@ -167,4 +167,8 @@
 </div>
 @if (isPasswordModalOpen) {
   <app-change-password-form (closeForm)="closePasswordModal()" (saveForm)="changePassword($event)" [errors]="errors"/>
+}
+
+@if (isNotificationModalOpen){
+  <app-notification-modal [notification]="selectedNotification" (closeModal)="closeNotificationModal()" (deleteNotification)="onDeleteNotification($event); closeNotificationModal()"/>
 }
