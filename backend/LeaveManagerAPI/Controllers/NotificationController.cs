@@ -26,5 +26,18 @@ namespace LeaveManagerAPI.Controllers
             
             return Ok(result.Data);
         }
+
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetNotificationById(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var result = await notificationService.GetNotificationByIdAsync(id, userId);
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.Errors);
+            }
+            return Ok(result.Data);
+        }
     }
 }
