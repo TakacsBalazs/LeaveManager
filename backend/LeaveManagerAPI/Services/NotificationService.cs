@@ -1,6 +1,7 @@
 ﻿using LeaveManagerAPI.Common;
 using LeaveManagerAPI.Data;
 using LeaveManagerAPI.Hubs;
+using LeaveManagerAPI.Models;
 using LeaveManagerAPI.Models.Responses;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -77,6 +78,29 @@ namespace LeaveManagerAPI.Services
             context.Notifications.Remove(notification);
             await context.SaveChangesAsync();
             return Result.Success();
+        }
+
+        public async Task SendNotificationAsync(string userId, string title, string message)
+        {
+            var notification = new Notification
+            {
+                UserId = userId,
+                Title = title,
+                Message = message
+            };
+
+            context.Notifications.Add(notification);
+            await context.SaveChangesAsync();
+
+
+            var response = new NotificationResponse
+            {
+                Id = notification.Id,
+                Title = notification.Title,
+                Message = notification.Message,
+                IsRead = notification.IsRead,
+                CreatedAt = notification.CreatedAt
+            };
         }
     }
 }
