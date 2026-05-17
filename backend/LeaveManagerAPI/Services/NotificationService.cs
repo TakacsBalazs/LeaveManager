@@ -11,7 +11,7 @@ namespace LeaveManagerAPI.Services
     {
         private readonly AppDbContext context;
 
-        public NotificationService(AppDbContext context, IHubContext<LeaveHub, ILeaveClient> hubContext)
+        public NotificationService(AppDbContext context, IHubContext<LeaveHub)
         {
             this.context = context;
         }
@@ -29,6 +29,36 @@ namespace LeaveManagerAPI.Services
                 }).ToListAsync();
 
             return Result<IEnumerable<NotificationResponse>>.Success(response);
+        }
+
+        public async Task<Result<NotificationResponse>> GetNotificationByIdAsync(int id, string userId)
+        {
+            var notification = await context.Notifications.FindAsync(id);
+            if(notification == null) {
+                return Result<NotificationResponse>.Failure("Invalid Id!");
+            }
+
+            if(notification.UserId != userId)
+            {
+                return Result<NotificationResponse>.Failure("Can't see this notification!");
+            }
+
+            if (!notification.IsRead)
+            {
+                notification.IsRead = true;
+                await context.SaveChangesAsync();
+            }
+
+            var response = new NotificationResponse
+            {
+                Id = notification.Id,
+                Title = notification.Title,
+                Message = notification.Message,
+                IsRead = notification.IsRead,
+                CreatedAt = notification.CreatedAt,
+            };
+
+            return Result<NotificationResponse>.Success(response);
         }
     }
 }
