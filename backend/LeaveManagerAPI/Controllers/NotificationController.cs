@@ -39,5 +39,18 @@ namespace LeaveManagerAPI.Controllers
             }
             return Ok(result.Data);
         }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteNotification(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var result = await notificationService.DeleteNotificationAsync(id, userId);
+            if(!result.IsSuccess)
+            {
+                return BadRequest(result.Errors);
+            }
+            return Ok(new { message = "Successful delete this notification!" });
+        }
     }
 }
