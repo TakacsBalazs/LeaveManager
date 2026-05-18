@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NotificationResponse } from '../../models/notification';
 import { NotificationService } from '../../core/services/notification.service';
 import { NotificationModalComponent } from '../../components/notification-modal/notification-modal.component';
+import { SignalrService } from '../../core/services/signalr.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -33,7 +34,7 @@ export class MainLayoutComponent implements OnInit{
     return this.notifications().filter(x => !x.isRead).length;
   });
 
-  constructor(private authService: AuthService, private router: Router, private toast: ToastrService, private notificationService: NotificationService) {}
+  constructor(private authService: AuthService, private router: Router, private toast: ToastrService, private notificationService: NotificationService, private signalrService: SignalrService) {}
 
   ngOnInit(): void {
     this.isAdmin = this.authService.isAdmin();
@@ -42,6 +43,15 @@ export class MainLayoutComponent implements OnInit{
         this.notifications.set(resp);
       }
     });
+
+    this.signalrService.startConnection();
+
+    this.signalrService.onNewNotification((newNotification) => {
+
+      this.notifications.update(currentArray => {
+        return [newNotification, ...currentArray];
+      });
+    })
   }
 
   logout(){
