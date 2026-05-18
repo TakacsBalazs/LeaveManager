@@ -14,11 +14,13 @@ namespace LeaveManagerAPI.Services
     {
         private readonly AppDbContext context;
         private readonly IServiceProvider serviceProvider;
+        private readonly INotificationService notificationService;
 
-        public LeaveRequestService(AppDbContext context, IServiceProvider serviceProvider)
+        public LeaveRequestService(AppDbContext context, IServiceProvider serviceProvider, INotificationService notificationService)
         {
             this.context = context;
             this.serviceProvider = serviceProvider;
+            this.notificationService = notificationService;
 
         }
         public async Task<Result<DashboardResponse>> GetDashboardAsync(string userId)
@@ -105,6 +107,10 @@ namespace LeaveManagerAPI.Services
 
             await context.SaveChangesAsync();
 
+            var fullName = await context.Users.Where(x => x.Id == userId).Select(x => x.FullName).FirstOrDefaultAsync();
+
+            await notificationService.SendNotificationToAdminsAsync("New Leave Request", $"A new {leaveRequest.Type} leave request has been submitted for the period: {leaveRequest.StartDate:yyyy-MM-dd} to {leaveRequest.EndDate:yyyy-MM-dd} by {fullName}.");
+
             return Result.Success();
         }
 
@@ -132,7 +138,7 @@ namespace LeaveManagerAPI.Services
 
         public async Task<Result> CancelRequestAsync(int id, string userId)
         {
-            var request = await context.LeaveRequests.FindAsync(id);
+            var request = await context.LeaveRequests.Include(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
             if(request == null)
             {
                 return Result.Failure("Invalid Id!");
@@ -150,6 +156,8 @@ namespace LeaveManagerAPI.Services
 
             request.Status = LeaveRequestStatus.Cancelled;
             await context.SaveChangesAsync();
+
+            await notificationService.SendNotificationToAdminsAsync("Leave Request Cancelled", $"The {request.Type} leave request for the period {request.StartDate:yyyy-MM-dd} to {request.EndDate:yyyy-MM-dd} has been cancelled by {request.User.FullName}.");
 
             return Result.Success();
         }
@@ -218,6 +226,8 @@ namespace LeaveManagerAPI.Services
 
             await context.SaveChangesAsync();
 
+            await notificationService.SendNotificationAsync(request.UserId, "Leave Request Approved", $"Your {request.Type} leave request for {request.StartDate:yyyy-MM-dd} to {request.EndDate:yyyy-MM-dd} has been approved.");
+
             return Result.Success();
         }
 
@@ -239,6 +249,8 @@ namespace LeaveManagerAPI.Services
             request.ReviewedAt = DateTime.UtcNow;
 
             await context.SaveChangesAsync();
+
+            await notificationService.SendNotificationAsync(request.UserId, "Leave Request Rejected", $"Your {request.Type} leave request for {request.StartDate:yyyy-MM-dd} to {request.EndDate:yyyy-MM-dd} has been rejected.");
 
             return Result.Success();
         }
