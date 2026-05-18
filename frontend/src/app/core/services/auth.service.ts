@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, Subject, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { MessageResponse } from '../../models/api-responses';
 import { ChangePasswordRequest } from '../../models/auth';
@@ -11,6 +11,8 @@ import { environment } from '../../../environments/environment';
 })
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/auth`;
+
+  public logoutEvent$ = new Subject<void>();
 
   constructor(private http: HttpClient) { }
 
@@ -75,6 +77,8 @@ export class AuthService {
 
   logout(){
     localStorage.removeItem('jwt_token');
+    
+    this.logoutEvent$.next();
   }
   
   changePassword(request: ChangePasswordRequest): Observable<MessageResponse>{
