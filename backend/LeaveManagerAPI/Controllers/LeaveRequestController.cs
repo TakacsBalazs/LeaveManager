@@ -113,5 +113,17 @@ namespace LeaveManagerAPI.Controllers
             }
             return Ok(result.Data);
         }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpGet("getleaverequestcalendar")]
+        public async Task<IActionResult> GetLeaveRequestCalendar([FromQuery] GetLeaveRequestCalendarRequest request)
+        {
+            var result = await leaveRequestService.GetLeaveRequestCalendarAsync(request);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Errors);
+            }
+            return Ok(result.Data);
+        }
     }
 }
