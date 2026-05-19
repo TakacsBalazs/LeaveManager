@@ -1,5 +1,27 @@
 <div class="bg-white shadow rounded-lg p-6 border border-gray-200">
-  
+  <div class="flex gap-4 mb-8">
+    <div class="flex items-center gap-2">
+      <span class="w-5 h-5 rounded-full bg-orange-400 shadow-sm"></span>
+      <span class="text-base text-gray-700">Pending Leave Request</span>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <span class="w-5 h-5 rounded-full bg-blue-700 shadow-sm"></span>
+      <span class="text-base text-gray-700">Unpaid Leave Request</span>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <span class="w-5 h-5 rounded-full bg-green-700 shadow-sm"></span>
+      <span class="text-base text-gray-700">Annual Leave Request</span>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <span class="w-5 h-5 rounded-full bg-red-600 shadow-sm"></span>
+      <span class="text-base text-gray-700">Sick Leave Request</span>
+    </div>
+  </div>
+
+  <full-calendar [options]="calendarOptions" class="mb-6 mx-16" />
     <h1 class="text-2xl font-bold text-gray-800 mb-2">Pending Requests</h1>
     <p class="text-gray-600 mb-6">Here you can see all pending leave requests submitted.</p>
   
@@ -8,7 +30,7 @@
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     } @else {
-      
+
       @if(data.length === 0) {
         <div class="text-center py-10 bg-gray-50 rounded-lg border border-gray-100">
           <p class="text-gray-500 font-medium">There are no pending leave requests.</p>

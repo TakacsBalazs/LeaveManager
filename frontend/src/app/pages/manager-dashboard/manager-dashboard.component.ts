@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { LeaveRequestDto } from '../../models/leave-request';
+import { FilterLeaveRequestCalendar, LeaveRequestDto } from '../../models/leave-request';
 import { LeaveRequestService } from '../../core/services/leave-request.service'; 
 import { RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { CalendarOptions } from '@fullcalendar/core';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import { FullCalendarModule } from '@fullcalendar/angular';
 
 @Component({
   selector: 'app-manager-dashboard',
-  imports: [RouterLink],
+  imports: [RouterLink, FullCalendarModule],
   templateUrl: './manager-dashboard.component.html',
   styleUrl: './manager-dashboard.component.scss'
 })
@@ -15,6 +18,57 @@ export class ManagerDashboardComponent implements OnInit{
   data: LeaveRequestDto[] = [];
   isLoading = true;
 
+  calendarOptions: CalendarOptions = {
+    plugins: [dayGridPlugin],
+    initialView: 'dayGridMonth',
+    weekends: false,
+    height: 650,
+    buttonText: {
+      today: 'Today'
+    },
+
+    events: (fetchInfo, successCallback, failureCallback) => {
+
+      const params: FilterLeaveRequestCalendar = {
+        startDate: fetchInfo.startStr.split('T')[0],
+        endDate: fetchInfo.endStr.split('T')[0]
+      }
+
+      this.leaveRequestService.getLeaveRequestCalendar(params).subscribe({
+        next: (resp) => {
+          const formattedEvents = resp.map(leave => ({
+            id: leave.id.toString(),
+            title: leave.requesterName,
+            start: leave.startDate,
+            end: leave.endDate,
+            color: this.getEventColor(leave.status, leave.type)
+          }));
+          successCallback(formattedEvents);
+        },
+        error: (err) => failureCallback(err)
+      })
+    },
+  };
+
+  getEventColor(status: string, type: string): string {
+    if (status === 'Pending') {
+      return 'orange';
+    } else if (status === 'Approved') {
+      switch (type) {
+        case 'AnnualLeave':
+          return 'green';
+          
+        case 'SickLeave':
+          return 'red';
+          
+        case 'Unpaid':
+          return 'blue';
+      }
+    }
+  
+    return 'gray';
+  }
+
   constructor(private leaveRequestService: LeaveRequestService, private toast: ToastrService){}
 
   ngOnInit(): void {
@@ -22,6 +76,10 @@ export class ManagerDashboardComponent implements OnInit{
       next: (resp) => {
         this.data = resp;
         this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.toast.error('There was an error loading the data. Please try again later.', 'Error');
       }
     })
   }
