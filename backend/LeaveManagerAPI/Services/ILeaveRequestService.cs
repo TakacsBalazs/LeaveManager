@@ -21,5 +21,7 @@ namespace LeaveManagerAPI.Services
         Task<Result> RejectRequestAsync(int id, string userId);
 
         Task<Result<IEnumerable<LeaveRequestResponse>>> GetAllPendingRequestsAsync();
+
+        Task<Result<IEnumerable<LeaveRequestCalendarResponse>>> GetLeaveRequestCalendarAsync(GetLeaveRequestCalendarRequest request);
     }
 }
