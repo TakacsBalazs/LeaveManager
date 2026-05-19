@@ -18,3 +18,17 @@ export interface LeaveRequestDto{
     createdAt: string,
     requesterName: string
 }
+
+export interface FilterLeaveRequestCalendar {
+    startDate: string,
+    endDate: string
+}
+
+export interface LeaveRequestCalendar{
+    id: number,
+    type: string,
+    startDate: string,
+    endDate: string,
+    status: string,
+    requesterName: string
+}
