@@ -109,7 +109,7 @@ namespace LeaveManagerAPI.Services
 
             var fullName = await context.Users.Where(x => x.Id == userId).Select(x => x.FullName).FirstOrDefaultAsync();
 
-            await notificationService.SendNotificationToAdminsAsync("New Leave Request", $"A new {leaveRequest.Type} leave request has been submitted for the period: {leaveRequest.StartDate:yyyy-MM-dd} to {leaveRequest.EndDate:yyyy-MM-dd} by {fullName}.");
+            await notificationService.SendNotificationToAdminsAsync("New Leave Request", $"A new {leaveRequest.Type} leave request has been submitted for the period {leaveRequest.StartDate:yyyy-MM-dd} to {leaveRequest.EndDate:yyyy-MM-dd} by {fullName}.");
 
             return Result.Success();
         }
@@ -273,6 +273,26 @@ namespace LeaveManagerAPI.Services
             }).ToListAsync();
 
             return Result<IEnumerable<LeaveRequestResponse>>.Success(response);
+        }
+
+        public async Task<Result<IEnumerable<LeaveRequestCalendarResponse>>> GetLeaveRequestCalendarAsync(GetLeaveRequestCalendarRequest request)
+        {
+            var query = context.LeaveRequests.Where(x => x.Status != LeaveRequestStatus.Rejected && x.Status != LeaveRequestStatus.Cancelled);
+            if (request.StartDate.HasValue && request.EndDate.HasValue)
+            {
+                query = query.Where(x => x.StartDate <= request.EndDate && x.EndDate >= request.StartDate);
+            }
+
+            var response = await query.Select(x => new LeaveRequestCalendarResponse
+            {
+               Id = x.Id,
+               Type = x.Type,
+               StartDate = x.StartDate,
+               EndDate = x.EndDate,
+               Status = x.Status,
+               RequesterName = x.User.FullName
+            }).ToListAsync();
+            return Result<IEnumerable<LeaveRequestCalendarResponse>>.Success(response);
         }
     }
 }
