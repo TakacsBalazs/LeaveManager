@@ -95,7 +95,10 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
-builder.Services.AddSignalR();
+builder.Services.AddSignalR().AddJsonProtocol(options =>
+{
+    options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter(null, true));
+});
 
 var app = builder.Build();
 
