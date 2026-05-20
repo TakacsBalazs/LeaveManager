@@ -28,4 +28,10 @@ export class SignalrService {
       callback(notification);
     })
   }
+
+  public onLeaveRequestChanged(callback: (id: number, status: string) => void){
+    this.hubConnection?.on('LeaveRequestChanged', (id: number, status: string) => {
+      callback(id, status);
+    })
+  }
 }
