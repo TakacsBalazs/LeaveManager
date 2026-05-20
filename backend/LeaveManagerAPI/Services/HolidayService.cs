@@ -19,9 +19,20 @@ namespace LeaveManagerAPI.Services
             this.serviceProvider = serviceProvider;
         }
 
-        public async Task<Result<IEnumerable<HolidayResponse>>> GetAllHolidaysAsync()
+        public async Task<Result<IEnumerable<HolidayResponse>>> GetAllHolidaysAsync(GetHolidaysRequest request)
         {
-            var response = await context.Holidays.Select(x => new HolidayResponse
+            var query = context.Holidays.AsQueryable();
+            if(request.MinDate.HasValue)
+            {
+                query = query.Where(x => x.Date >= request.MinDate);
+            }
+
+            if (request.MaxDate.HasValue)
+            {
+                query = query.Where(x => x.Date <= request.MaxDate);
+            }
+
+            var response = await query.Select(x => new HolidayResponse
             {
                 Id = x.Id,
                 Name = x.Name,
