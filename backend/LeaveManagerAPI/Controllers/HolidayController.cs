@@ -19,9 +19,9 @@ namespace LeaveManagerAPI.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> GetAllHolidays()
+        public async Task<IActionResult> GetAllHolidays([FromQuery] GetHolidaysRequest request)
         {
-            var result = await holidayService.GetAllHolidaysAsync();
+            var result = await holidayService.GetAllHolidaysAsync(request);
             if (!result.IsSuccess)
             {
                 return BadRequest(result.Errors);
