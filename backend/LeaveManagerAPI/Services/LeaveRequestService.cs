@@ -2,10 +2,12 @@
 using LeaveManagerAPI.Constants;
 using LeaveManagerAPI.Data;
 using LeaveManagerAPI.Extensions;
+using LeaveManagerAPI.Hubs;
 using LeaveManagerAPI.Models;
 using LeaveManagerAPI.Models.Dtos;
 using LeaveManagerAPI.Models.Requests;
 using LeaveManagerAPI.Models.Responses;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeaveManagerAPI.Services
@@ -15,12 +17,14 @@ namespace LeaveManagerAPI.Services
         private readonly AppDbContext context;
         private readonly IServiceProvider serviceProvider;
         private readonly INotificationService notificationService;
+        private readonly IHubContext<LeaveHub, ILeaveClient> hubContext;
 
-        public LeaveRequestService(AppDbContext context, IServiceProvider serviceProvider, INotificationService notificationService)
+        public LeaveRequestService(AppDbContext context, IServiceProvider serviceProvider, INotificationService notificationService, IHubContext<LeaveHub, ILeaveClient> hubContext)
         {
             this.context = context;
             this.serviceProvider = serviceProvider;
             this.notificationService = notificationService;
+            this.hubContext = hubContext;
 
         }
         public async Task<Result<DashboardResponse>> GetDashboardAsync(string userId)
@@ -111,6 +115,8 @@ namespace LeaveManagerAPI.Services
 
             await notificationService.SendNotificationToAdminsAsync("New Leave Request", $"A new {leaveRequest.Type} leave request has been submitted for the period {leaveRequest.StartDate:yyyy-MM-dd} to {leaveRequest.EndDate:yyyy-MM-dd} by {fullName}.");
 
+            await hubContext.Clients.Group(UserRoles.Admin).LeaveRequestChanged(leaveRequest.Id, leaveRequest.Status);
+
             return Result.Success();
         }
 
@@ -158,6 +164,8 @@ namespace LeaveManagerAPI.Services
             await context.SaveChangesAsync();
 
             await notificationService.SendNotificationToAdminsAsync("Leave Request Cancelled", $"The {request.Type} leave request for the period {request.StartDate:yyyy-MM-dd} to {request.EndDate:yyyy-MM-dd} has been cancelled by {request.User.FullName}.");
+
+            await hubContext.Clients.Group(UserRoles.Admin).LeaveRequestChanged(request.Id, request.Status);
 
             return Result.Success();
         }
@@ -228,6 +236,8 @@ namespace LeaveManagerAPI.Services
 
             await notificationService.SendNotificationAsync(request.UserId, "Leave Request Approved", $"Your {request.Type} leave request for {request.StartDate:yyyy-MM-dd} to {request.EndDate:yyyy-MM-dd} has been approved.");
 
+            await hubContext.Clients.Group(UserRoles.Admin).LeaveRequestChanged(request.Id, request.Status);
+
             return Result.Success();
         }
 
@@ -251,6 +261,8 @@ namespace LeaveManagerAPI.Services
             await context.SaveChangesAsync();
 
             await notificationService.SendNotificationAsync(request.UserId, "Leave Request Rejected", $"Your {request.Type} leave request for {request.StartDate:yyyy-MM-dd} to {request.EndDate:yyyy-MM-dd} has been rejected.");
+
+            await hubContext.Clients.Group(UserRoles.Admin).LeaveRequestChanged(request.Id , request.Status);
 
             return Result.Success();
         }
