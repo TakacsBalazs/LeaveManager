@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, ViewChild } from '@angular/core';
 import { FilterLeaveRequestCalendar, LeaveRequestDto } from '../../models/leave-request';
 import { LeaveRequestService } from '../../core/services/leave-request.service'; 
 import { RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CalendarOptions } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import { FullCalendarModule } from '@fullcalendar/angular';
+import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
+import { SignalrService } from '../../core/services/signalr.service';
 
 @Component({
   selector: 'app-manager-dashboard',
@@ -17,6 +18,8 @@ export class ManagerDashboardComponent implements OnInit{
 
   data: LeaveRequestDto[] = [];
   isLoading = true;
+
+  @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
 
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin],
@@ -69,9 +72,25 @@ export class ManagerDashboardComponent implements OnInit{
     return 'gray';
   }
 
-  constructor(private leaveRequestService: LeaveRequestService, private toast: ToastrService){}
+  constructor(private leaveRequestService: LeaveRequestService, private toast: ToastrService, private singnalr: SignalrService){}
 
   ngOnInit(): void {
+    this.loadPendingRequest();
+
+    this.singnalr.onLeaveRequestChanged((id, status) => {
+      if(this.calendarComponent){
+        this.calendarComponent.getApi().refetchEvents();
+      }
+      
+      if(status === 'Approved' || status === 'Rejected' || status === 'Cancelled'){
+        this.data = this.data.filter(x => x.id !== id);
+      } else if(status === 'Pending'){
+        this.loadPendingRequest();
+      }
+    })
+  }
+
+  loadPendingRequest(){
     this.leaveRequestService.getAllPendingRequests().subscribe({
       next: (resp) => {
         this.data = resp;
