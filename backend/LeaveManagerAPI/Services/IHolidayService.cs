@@ -6,7 +6,7 @@ namespace LeaveManagerAPI.Services
 {
     public interface IHolidayService
     {
-        Task<Result<IEnumerable<HolidayResponse>>> GetAllHolidaysAsync();
+        Task<Result<IEnumerable<HolidayResponse>>> GetAllHolidaysAsync(GetHolidaysRequest request);
 
         Task<Result<HolidayResponse>> CreateHolidayAsync(CreateHolidayRequest request);
 
