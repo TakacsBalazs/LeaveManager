@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { CreateHolidayRequest, HolidayResponse } from '../../models/holiday';
+import { CreateHolidayRequest, FilterHoliday, HolidayResponse } from '../../models/holiday';
 import { HolidayService } from '../../core/services/holiday.service';
 import { ToastrService } from 'ngx-toastr';
 import { HolidayFormComponent } from '../../components/holiday-form/holiday-form.component';
 import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-modal.component';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-holiday-list',
-  imports: [HolidayFormComponent, ConfirmModalComponent],
+  imports: [HolidayFormComponent, ConfirmModalComponent, ReactiveFormsModule],
   templateUrl: './holiday-list.component.html',
   styleUrl: './holiday-list.component.scss'
 })
@@ -19,10 +20,19 @@ export class HolidayListComponent implements OnInit{
   isConfirmOpen = false;
   idToDelete: number | null = null;
 
+  filterForm: FormGroup = new FormGroup({
+    minDate: new FormControl(''),
+    maxDate: new FormControl(''),
+  })
+
   constructor(private holidayService: HolidayService, private toast: ToastrService){}
 
   ngOnInit(): void {
-    this.holidayService.getAllHolidays().subscribe({
+    this.getAllHolidays(null);
+  }
+
+  getAllHolidays(filter: FilterHoliday | null) {
+    this.holidayService.getAllHolidays(filter).subscribe({
       next: (resp) => {
         this.data = resp;
         this.isLoading = false;
@@ -78,5 +88,14 @@ export class HolidayListComponent implements OnInit{
         this.toast.error("Couldn't delete the holiday!", 'Error');
       }
     })
+  }
+
+  onSubmitQuery(){
+    const filter: FilterHoliday = {
+      minDate: this.filterForm.value.minDate,
+      maxDate: this.filterForm.value.maxDate
+    }
+
+    this.getAllHolidays(filter);
   }
 }
