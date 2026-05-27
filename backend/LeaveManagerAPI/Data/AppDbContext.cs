@@ -26,6 +26,7 @@ namespace LeaveManagerAPI.Data
             builder.Entity<User>(entity =>
             {
                 entity.Property(x => x.FullName).IsRequired().HasMaxLength(100);
+                entity.Property(x => x.ProfilePictureUrl).IsRequired(false);
                 entity.Property(x => x.CreatedAt).IsRequired().HasDefaultValueSql("GETUTCDATE()");
             });
 
