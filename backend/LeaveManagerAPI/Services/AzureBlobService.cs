@@ -37,5 +37,26 @@ namespace LeaveManagerAPI.Services
 
             await blobClient.DeleteIfExistsAsync();
         }
+
+        public string GetProtectedUrl(string folderName, string blobName)
+        {
+            var container = blobServiceClient.GetBlobContainerClient(folderName);
+            var blobClient = container.GetBlobClient(blobName);
+
+
+            var sasBuilder = new BlobSasBuilder
+            {
+                BlobContainerName = container.Name,
+                BlobName = blobClient.Name,
+                Resource = "b",
+                ExpiresOn = DateTimeOffset.UtcNow.AddMinutes(10)
+            };
+
+            sasBuilder.SetPermissions(BlobAccountSasPermissions.Read);
+
+            Uri sasUri = blobClient.GenerateSasUri(sasBuilder);
+
+            return sasUri.ToString();
+        }
     }
 }
