@@ -1,3 +1,4 @@
+using Azure.Storage.Blobs;
 using FluentValidation;
 using LeaveManagerAPI.Data;
 using LeaveManagerAPI.Hubs;
@@ -47,6 +48,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ILeaveBalanceService, LeaveBalanceService>();
 builder.Services.AddScoped<IHolidayService, HolidayService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IAzureBlobService, AzureBlobService>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -99,6 +101,8 @@ builder.Services.AddSignalR().AddJsonProtocol(options =>
 {
     options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter(null, true));
 });
+
+builder.Services.AddSingleton<BlobServiceClient>(x => new BlobServiceClient(builder.Configuration.GetConnectionString("AzureBlobStorage")));
 
 var app = builder.Build();
 
