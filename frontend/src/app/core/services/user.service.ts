@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CreateUserRequest, FilterUsersRequest, Role, UpdateUserRequest, UserDropdown, UserDto } from '../../models/user';
+import { CreateUserRequest, FilterUsersRequest, Role, UpdateUserRequest, UploadProfilePictureRequest, UserDropdown, UserDto } from '../../models/user';
 import { MessageResponse } from '../../models/api-responses';
 import { buildCleanParams } from '../utils/http.utils';
 import { environment } from '../../../environments/environment';
@@ -38,5 +38,13 @@ export class UserService {
 
   getRoles(): Observable<Role[]>{
     return this.http.get<Role[]>(`${this.apiUrl}/roles`);
+  }
+
+  uploadProfilePicture(request: UploadProfilePictureRequest): Observable<MessageResponse>{
+
+    const formData = new FormData();
+    formData.append('file', request.file, request.file.name);
+
+    return this.http.post<MessageResponse>(`${this.apiUrl}/upload-profile-picture`, formData);
   }
 }
