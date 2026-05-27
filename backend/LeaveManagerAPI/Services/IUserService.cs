@@ -17,5 +17,7 @@ namespace LeaveManagerAPI.Services
         Task<Result<IEnumerable<UserDropdownResponse>>> GetUsersDropdownsAsync();
 
         Task<Result<IEnumerable<RoleResponse>>> GetRolesAsync();
+
+        Task<Result> UploadProfilePictureAsync(UploadProfilePictureRequest request, string userId);
     }
 }
