@@ -1,15 +1,28 @@
 <div class="bg-white shadow rounded-lg p-6 border border-gray-200">
-    <h1 class="text-2xl font-bold text-gray-800 mb-4">Welcome to the site!</h1>
+    <div class="flex justify-between items-center">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800 mb-2">Welcome to the site!</h1>
+        <p class="text-gray-600">
+          You can view your basic information here (e.g. how much vacation do you have left this year, when was the last time you had a vacation).
+        </p>
+      </div>
+      @if(data?.profilePictureUrl) {
+        <img [src]="data!.profilePictureUrl" class="h-20 w-20 rounded-full object-cover border-2 border-gray-200 shadow-sm">
+      } @else {
+        <div class="h-20 w-20 rounded-full bg-gray-100 flex items-center justify-center border-2 border-gray-200 shadow-sm">
+          <svg class="h-10 w-10 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        </div>
+      }
+    </div> 
     
-    <p class="text-gray-600">
-      You can view your basic information here (e.g. how much vacation do you have left this year, when was the last time you had a vacation).
-    </p>
     @if(isLoading){
       <div class="flex justify-center items-center py-10">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     } @else {
-      <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         @for (balance of data?.balances; track $index) {
           <div class="bg-blue-50 p-4 rounded-md border border-blue-100">
             <span class="block text-lg text-blue-500 font-semibold">All days ({{balance.type}})</span>
@@ -26,4 +39,4 @@
         }
       </div>
     }
-  </div>
+</div>
