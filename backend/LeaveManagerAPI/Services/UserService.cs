@@ -14,11 +14,14 @@ namespace LeaveManagerAPI.Services
         private AppDbContext context;
         private IServiceProvider serviceProvider;
         private UserManager<User> userManager;
-        public UserService(AppDbContext context, IServiceProvider serviceProvider, UserManager<User> userManager)
+        private readonly IAzureBlobService azureBlobService;
+        public UserService(AppDbContext context, IServiceProvider serviceProvider, UserManager<User> userManager, IAzureBlobService azureBlobService)
         {
             this.context = context;
             this.serviceProvider = serviceProvider;
             this.userManager = userManager;
+            this.azureBlobService = azureBlobService;
+
         }
 
 
@@ -177,6 +180,34 @@ namespace LeaveManagerAPI.Services
             }).ToListAsync();
 
             return Result<IEnumerable<RoleResponse>>.Success(response);
+        }
+
+        public async Task<Result> UploadProfilePictureAsync(UploadProfilePictureRequest request, string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return Result.Failure("Invalid Id!");
+            }
+
+            if (user.ProfilePictureUrl != null)
+            {
+                await azureBlobService.DeleteFileAsync("profiles", user.ProfilePictureUrl);
+            }
+
+            using var stream = request.File.OpenReadStream();
+
+            var profilePath = await azureBlobService.UploadAsync(stream, request.File.FileName, "profiles", request.File.ContentType);
+
+            user.ProfilePictureUrl = profilePath.Data;
+
+            var updateResult = await userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
+            {
+                return Result.Failure(updateResult.Errors.Select(e => e.Description).ToList());
+            }
+
+            return Result.Success();
         }
     }
 }
