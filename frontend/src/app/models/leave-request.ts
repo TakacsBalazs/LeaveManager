@@ -16,7 +16,8 @@ export interface LeaveRequestDto{
     reviewerName: string | null,
     reviewedAt: string | null,
     createdAt: string,
-    requesterName: string
+    requesterName: string,
+    requesterProfilePictureUrl?: string
 }
 
 export interface FilterLeaveRequestCalendar {
