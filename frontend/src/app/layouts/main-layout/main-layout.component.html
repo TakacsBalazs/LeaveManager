@@ -66,6 +66,7 @@
             </button>
             @if(isProfileDropdownOpen){
               <div class="absolute right-0 mt-10 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-50">
+                <button (click)="toggleProfilePictureModal(); isProfileDropdownOpen = false" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Upload Profile Picture</button>
                 <button (click)="openPasswordModal(); isProfileDropdownOpen = false" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Change Password</button>
                 <div class="border-t border-gray-100"></div>
                 <button (click)="logout()" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">Logout</button>
@@ -110,6 +111,7 @@
               <span class="py-[1px] px-2 bg-red-600 rounded-full">{{ unreadNotificationsCount() > 9 ? '9+' : unreadNotificationsCount() }}</span>
             }
           </button>
+          <button (click)="toggleProfilePictureModal(); isMobileMenuOpen = false" class="text-white w-full text-left block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-500 ml-2">Upload Profile Picture</button>
           <button (click)="openPasswordModal(); isMobileMenuOpen = false" class="text-white w-full text-left block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-500 ml-2">Change Password</button>
           <button (click)="logout()" class="text-red-400 w-full text-left block px-3 py-2 rounded-md text-base font-medium hover:bg-red-600 hover:text-white ml-2">Logout</button>
         </div>
@@ -171,4 +173,8 @@
 
 @if (isNotificationModalOpen){
   <app-notification-modal [notification]="selectedNotification" (closeModal)="closeNotificationModal()" (deleteNotification)="onDeleteNotification($event); closeNotificationModal()"/>
+}
+
+@if (isProfilePictureModalOpen){
+  <app-upload-profile-picture-form (closeForm)="toggleProfilePictureModal()" [errors]="errors" (saveForm)="uploadProfilePicture($event)"/>
 }

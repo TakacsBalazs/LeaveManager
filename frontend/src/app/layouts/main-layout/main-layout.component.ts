@@ -8,10 +8,13 @@ import { NotificationResponse } from '../../models/notification';
 import { NotificationService } from '../../core/services/notification.service';
 import { NotificationModalComponent } from '../../components/notification-modal/notification-modal.component';
 import { SignalrService } from '../../core/services/signalr.service';
+import { UploadProfilePictureFormComponent } from '../../components/upload-profile-picture-form/upload-profile-picture-form.component';
+import { UploadProfilePictureRequest } from '../../models/user';
+import { UserService } from '../../core/services/user.service';
 
 @Component({
   selector: 'app-main-layout',
-  imports: [RouterModule, ChangePasswordFormComponent, NotificationModalComponent],
+  imports: [RouterModule, ChangePasswordFormComponent, NotificationModalComponent, UploadProfilePictureFormComponent],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss'
 })
@@ -30,11 +33,13 @@ export class MainLayoutComponent implements OnInit{
   isNotificationModalOpen = false;
   selectedNotification: NotificationResponse | null = null;
 
+  isProfilePictureModalOpen = false;
+
   unreadNotificationsCount = computed(() => {
     return this.notifications().filter(x => !x.isRead).length;
   });
 
-  constructor(private authService: AuthService, private router: Router, private toast: ToastrService, private notificationService: NotificationService, private signalrService: SignalrService) {}
+  constructor(private authService: AuthService, private router: Router, private toast: ToastrService, private notificationService: NotificationService, private signalrService: SignalrService, private userService: UserService) {}
 
   ngOnInit(): void {
     this.isAdmin = this.authService.isAdmin();
@@ -128,6 +133,22 @@ export class MainLayoutComponent implements OnInit{
   closeNotificationModal(){
     this.isNotificationModalOpen = false; 
     this.selectedNotification = null;
+  }
+
+  toggleProfilePictureModal(){
+    this.isProfilePictureModalOpen = !this.isProfilePictureModalOpen;
+  }
+
+  uploadProfilePicture(request: UploadProfilePictureRequest){
+    this.userService.uploadProfilePicture(request).subscribe({
+      next: () => {
+        this.toast.success("Successfully upload the picture!", 'Success')
+      },
+      error: (err) => {
+        this.errors = err.error;
+        this.toast.error("Couldn't upload the picture!", 'Error');
+      }
+    })
   }
 
   onDeleteNotification(id: number){
