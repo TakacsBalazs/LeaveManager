@@ -22,6 +22,8 @@
 
         public string RequesterName { get; set; } = string.Empty;
 
+        public string? RequesterProfilePictureUrl { get; set; }
+
         public DateTime CreatedAt { get; set; }
     }
 }
