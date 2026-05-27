@@ -18,13 +18,15 @@ namespace LeaveManagerAPI.Services
         private readonly IServiceProvider serviceProvider;
         private readonly INotificationService notificationService;
         private readonly IHubContext<LeaveHub, ILeaveClient> hubContext;
+        private readonly IAzureBlobService azureBlobService;
 
-        public LeaveRequestService(AppDbContext context, IServiceProvider serviceProvider, INotificationService notificationService, IHubContext<LeaveHub, ILeaveClient> hubContext)
+        public LeaveRequestService(AppDbContext context, IServiceProvider serviceProvider, INotificationService notificationService, IHubContext<LeaveHub, ILeaveClient> hubContext, IAzureBlobService azureBlobService)
         {
             this.context = context;
             this.serviceProvider = serviceProvider;
             this.notificationService = notificationService;
             this.hubContext = hubContext;
+            this.azureBlobService = azureBlobService;
 
         }
         public async Task<Result<DashboardResponse>> GetDashboardAsync(string userId)
@@ -39,9 +41,14 @@ namespace LeaveManagerAPI.Services
                 RemainingDays = x.RemainingDays
             }).ToListAsync();
 
+            var profilePictureUrl = await context.Users.Where(x => x.Id == userId ).Select(x => x.ProfilePictureUrl).FirstOrDefaultAsync();
+
+            string? url = profilePictureUrl != null ? azureBlobService.GetProtectedUrl("profiles", profilePictureUrl) : null;
+
             var response = new DashboardResponse
             {
-                Balances = currentLeaveBalances
+                Balances = currentLeaveBalances,
+                ProfilePictureUrl = url
             };
 
             return Result<DashboardResponse>.Success(response);
@@ -191,7 +198,8 @@ namespace LeaveManagerAPI.Services
                 ReviewerName = x.Reviewer != null ? x.Reviewer.FullName : null,
                 ReviewedAt = x.ReviewedAt,
                 CreatedAt = x.CreatedAt,
-                RequesterName = x.User.FullName
+                RequesterName = x.User.FullName,
+                RequesterProfilePictureUrl = x.User.ProfilePictureUrl != null ?  azureBlobService.GetProtectedUrl("profiles", x.User.ProfilePictureUrl) : null
             }).FirstOrDefaultAsync();
 
             if(request == null)
