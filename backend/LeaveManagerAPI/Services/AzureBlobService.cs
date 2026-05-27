@@ -29,5 +29,13 @@ namespace LeaveManagerAPI.Services
 
             return Result<string>.Success(blobPath);
         }
+
+        public async Task DeleteFileAsync(string folderName, string blobName)
+        {
+            var container = blobServiceClient.GetBlobContainerClient(folderName);
+            var blobClient = container.GetBlobClient(blobName);
+
+            await blobClient.DeleteIfExistsAsync();
+        }
     }
 }
