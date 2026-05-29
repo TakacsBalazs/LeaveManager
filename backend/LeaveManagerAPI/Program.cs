@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -103,6 +104,12 @@ builder.Services.AddSignalR().AddJsonProtocol(options =>
 });
 
 builder.Services.AddSingleton<BlobServiceClient>(x => new BlobServiceClient(builder.Configuration.GetConnectionString("AzureBlobStorage")));
+
+if (!builder.Environment.IsDevelopment())
+{
+    var vaultUri = new Uri("https://leavemanager.vault.azure.net/");
+    builder.Configuration.AddAzureKeyVault(vaultUri, new DefaultAzureCredential());
+}
 
 var app = builder.Build();
 
