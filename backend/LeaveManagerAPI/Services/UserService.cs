@@ -190,11 +190,22 @@ namespace LeaveManagerAPI.Services
                 return Result.Failure("Invalid Id!");
             }
 
+            var allowedTypes = new List<string>() { "image/jpeg", "image/png"};
+            if (!allowedTypes.Contains(request.File.ContentType)) 
+            {
+                return Result.Failure("Only a JPG or PNG file is allowed!");
+            }
+
+            if (request.File.Length > 2 * 1024 * 1024)
+            {
+                return Result.Failure("The file is more than 2 MB!");
+            }
+
             if (user.ProfilePictureUrl != null)
             {
                 await azureBlobService.DeleteFileAsync("profiles", user.ProfilePictureUrl);
             }
-
+            
             using var stream = request.File.OpenReadStream();
 
             var profilePath = await azureBlobService.UploadAsync(stream, request.File.FileName, "profiles", request.File.ContentType);
