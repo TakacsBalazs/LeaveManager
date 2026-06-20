@@ -39,13 +39,18 @@ export class ManagerDashboardComponent implements OnInit{
 
       this.leaveRequestService.getLeaveRequestCalendar(params).subscribe({
         next: (resp) => {
-          const formattedEvents = resp.map(leave => ({
-            id: leave.id.toString(),
-            title: leave.requesterName,
-            start: leave.startDate,
-            end: leave.endDate,
-            color: this.getEventColor(leave.status, leave.type)
-          }));
+          const formattedEvents = resp.map(leave => {
+            const endDate = new Date(leave.endDate)
+            endDate.setDate(endDate.getDate() + 1);
+
+            return {
+              id: leave.id.toString(),
+              title: leave.requesterName,
+              start: leave.startDate,
+              end: endDate.toISOString().split('T')[0],
+              color: this.getEventColor(leave.status, leave.type)
+            }
+          });
           successCallback(formattedEvents);
         },
         error: (err) => failureCallback(err)
