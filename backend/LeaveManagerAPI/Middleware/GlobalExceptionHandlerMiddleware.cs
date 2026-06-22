@@ -29,7 +29,6 @@ namespace LeaveManagerAPI.Middleware
 
 				var response = new
 				{
-					StatusCode = context.Response.StatusCode,
 					Message = "Internal Server Error. Please try again later.",
 				};
 
