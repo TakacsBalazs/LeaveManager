@@ -12,6 +12,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Azure.Identity;
+using LeaveManagerAPI.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -112,6 +113,8 @@ if (!builder.Environment.IsDevelopment())
 }
 
 var app = builder.Build();
+
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
