@@ -13,8 +13,18 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Azure.Identity;
 using LeaveManagerAPI.Middleware;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration().MinimumLevel
+    .Information()
+    .WriteTo.ApplicationInsights(builder.Configuration["ApplicationInsights:ConnectionString"], TelemetryConverter.Traces)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
+builder.Services.AddApplicationInsightsTelemetry();
 
 // Add services to the container.
 
